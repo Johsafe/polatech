@@ -9,19 +9,23 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     price: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.FLOAT,
       allowNull: false,
     },
     image: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    cloudinary_id:{
+      type: DataTypes.STRING,
+      allowNull:false,
+    },
     inStock: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       allowNull: false,
     },
   });
