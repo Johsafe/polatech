@@ -8,8 +8,11 @@ const db = require("./models");
 // Routers
 const productRouter = require("./routes/product.js");
 const authRouter = require("./routes/authenticate.js");
+const orderRouter = require("./routes/orders.js");
+
 app.use("/product", productRouter);
 app.use("/authenicate", authRouter);
+app.use("/order",orderRouter);
 
 db.sequelize.sync().then(() => {
     app.listen(8000,()=>{

@@ -30,5 +30,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  Products.associate = function (models) {
+    Products.hasMany(models.OrderItems);
+  }
+
   return Products;
 };
