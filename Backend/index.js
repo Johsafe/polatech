@@ -10,9 +10,11 @@ const productRouter = require("./routes/product.js");
 const authRouter = require("./routes/authenticate.js");
 const orderRouter = require("./routes/orders.js");
 const stkRouter = require("./routes/Transaction.js");
+const adminRouter = require("./routes/Admin.js");
 
 app.use("/product", productRouter);
 app.use("/authenicate", authRouter);
+app.use("/owner",adminRouter);
 app.use("/order",orderRouter);
 app.use('/transaction',stkRouter);
 

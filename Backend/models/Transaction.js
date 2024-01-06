@@ -1,7 +1,6 @@
 //model/Trasaction.js
 
 module.exports = (sequelize, DataTypes) => {
-  
   const Transaction = sequelize.define("Transaction", {
     Tranx_Id: {
       type: DataTypes.STRING,

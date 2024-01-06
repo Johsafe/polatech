@@ -1,19 +1,23 @@
 const express = require("express");
 const productRouter = express.Router();
 const { Products } = require("../models");
-const cloudinary = require("../middleware/cloudinary.js");
 const multerUpload = require("../middleware/multer");
+const  cloudinary = require("../config/cloudinary.js");
+const { isAuth } = require("../middleware/auth");
 
 //create a new product
-productRouter.post("/", multerUpload.single('image'), async (req, res) => {
+productRouter.post("/",isAuth, multerUpload.single('image'), async (req, res) => {
   try {
     const { title, brand, price, inStock, description } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+  }
 
     // Upload image to Cloudinary
     const result = await cloudinary.uploader.upload(req.file.path,{
       folder:"ecommerce"
     });
-    console.log(result)
+    // console.log(result)
 
     // Extract the image URL from the Cloudinary response
     // const imageUrl = result.secure_url;
@@ -71,7 +75,7 @@ productRouter.get("/:id", async (req, res) => {
 });
 
 //delete product by id
-productRouter.delete("/:id", async (req, res) => {
+productRouter.delete("/:id",isAuth, async (req, res) => {
   const productId = req.params.id;
 
   try {
@@ -106,7 +110,7 @@ productRouter.delete("/:id", async (req, res) => {
 });
 
 //update product + image
-productRouter.put('/:productId', multerUpload.single('image'), async (req, res) => {
+productRouter.put('/:productId',isAuth, multerUpload.single('image'), async (req, res) => {
   try {
     const productId = req.params.productId;
     const { title, brand, price, inStock, description } = req.body;

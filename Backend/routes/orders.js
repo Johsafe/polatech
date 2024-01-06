@@ -4,9 +4,23 @@ const express = require("express");
 const { Op } = require("sequelize");
 const orderRouter = express.Router();
 const { Order, OrderItems, Products, Authenticate } = require("../models");
+const { isAuth } = require("../middleware/auth");
+
+//generate orderId
+const generateOrderCode = ()=> {
+  // Declare a characters variable which stores all characters
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let OrderCode = "";
+  for (let i = 0; i < 8; i++) {
+      OrderCode += characters[Math.floor(Math.random() * characters.length)];
+  }
+  // Append the current timestamp to the Order code
+  OrderCode += Date.now().toString();
+  return OrderCode;
+}
 
 //Create order
-orderRouter.post("/order", async (req, res) => {
+orderRouter.post("/order",isAuth, async (req, res) => {
   try {
     const { userId, products } = req.body;
 
@@ -17,7 +31,9 @@ orderRouter.post("/order", async (req, res) => {
     }
 
     // Create a new order
-    const newOrder = await Order.create({ userId });
+    const orderId = generateOrderCode();
+    const newOrder = await Order.create({ orderId,userId });
+    console.log(orderId , userId)
 
     // Calculate total amount
     let totalAmount = 0;
@@ -26,7 +42,7 @@ orderRouter.post("/order", async (req, res) => {
     const productsInOrder = await Products.findAll({
       where: {
         id: {
-          [Op.in]: products.map((product) => product.productId),
+          [Op.in]: products.map((product) => product.prodID),
         },
       },
     });
@@ -34,19 +50,19 @@ orderRouter.post("/order", async (req, res) => {
     // Create order items for each product in the order
     const orderItems = await Promise.all(
       productsInOrder.map(async (product, index) => {
-        const { productId, quantity } = products[index];
+        const { prodID, quantity } = products[index];
 
         // Check if the product exists
         if (!product) {
-          throw new Error(`Product with ID ${productId} not found`);
+          throw new Error(`Product with ID ${prodID} not found`);
         }
 
         totalAmount += quantity * product.price;
 
         // Create an order item for the product
         return OrderItems.create({
-          orderId: newOrder.id,
-          productId,
+          orderId: newOrder.orderId,
+          prodID,
           quantity,
           price: product.price,
         });
@@ -71,7 +87,7 @@ orderRouter.post("/order", async (req, res) => {
 });
 
 // Update order by ID
-orderRouter.put("/orders/:orderId", async (req, res) => {
+orderRouter.put("/orders/:orderId",isAuth, async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const { status } = req.body;
@@ -80,6 +96,7 @@ orderRouter.put("/orders/:orderId", async (req, res) => {
       include: [
         {
           model: OrderItems,
+          include:[Products],
         },
       ],
     });
@@ -118,7 +135,7 @@ orderRouter.get("/orders", async (req, res) => {
 });
 
 // Get order by ID
-orderRouter.get("/orders/:orderId", async (req, res) => {
+orderRouter.get("/orders/:orderId",isAuth, async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId, {
       include: [
@@ -173,7 +190,7 @@ orderRouter.get("/user/:userId", async (req, res) => {
 });
 
 // Delete order by ID
-orderRouter.delete("/orders/:orderId", async (req, res) => {
+orderRouter.delete("/orders/:orderId",isAuth, async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId);
     if (!order) {
@@ -190,7 +207,7 @@ orderRouter.delete("/orders/:orderId", async (req, res) => {
 });
 
 // Delete order and OrderItems by ID
-orderRouter.delete("/orders/:orderId", async (req, res) => {
+orderRouter.delete("/orders/:orderId",isAuth, async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId, {
       include: [OrderItems],

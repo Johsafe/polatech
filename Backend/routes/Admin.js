@@ -1,11 +1,9 @@
 const express = require("express");
-const authRouter = express.Router();
-const { Authenticate } = require("../models");
+const adminRouter = express.Router();
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const { Sequelize } = require("sequelize");
 const { generateJwtToken } = require("../middleware/generateToken");
-const { sendWelcomeEmail } = require("../services/sendEmail");
+const { Admin  } = require("../models");
 
 //format phone number
 const formatKenyanPhoneNumber = (phoneNumber, res) => {
@@ -26,12 +24,12 @@ const formatKenyanPhoneNumber = (phoneNumber, res) => {
 
 //Create new User
 
-authRouter.post("/create", async (req, res) => {
+adminRouter.post("/create", async (req, res) => {
   try {
-    const { fname, sname, email, mobile, password } = req.body;
+    const {fname, email, mobile, password } = req.body;
 
     //confirm is user exists in the system
-    const userExists = await Authenticate.findOne({
+    const userExists = await Admin.findOne({
       where: {
         email: req.body.email,
       },
@@ -47,14 +45,12 @@ authRouter.post("/create", async (req, res) => {
     if (!formattedPhoneNumber) {
       return;
     }
-    const user = await Authenticate.create({
-      fname,
-      sname,
+    const user = await Admin.create({
+        fname,
       email,
       mobile: formattedPhoneNumber,
       password: bcrypt.hashSync(password, 10),
     });
-    await sendWelcomeEmail(user.email, user.fname);
 
     res.status(201).json({
       message: "Signup successful!",
@@ -69,79 +65,8 @@ authRouter.post("/create", async (req, res) => {
   }
 });
 
-//login Route
-// authRouter.post("/log", async (req, res) => {
-//   const { identifier, password } = req.body;
-
-//   if (!identifier || !password) {
-//     return res.status(400).json({
-//       error: "Both email/mobileNumber and password are required for login.",
-//     });
-//   }
-
-//   console.log(identifier);
-
-//   try {
-//     let processedIdentifier;
-
-//     // Check if the identifier is an email
-//     if (/^\S+@\S+\.\S+$/.test(identifier)) {
-//       processedIdentifier = identifier;
-//     } else {
-
-//       const formattedPhoneNumber = formatKenyanPhoneNumber(identifier, res);
-//       processedIdentifier = formattedPhoneNumber;
-//     }
-//     console.log("after", processedIdentifier);
-
-//     const user = await Authenticate.findOne({
-//       // where: {
-//       //   [Sequelize.or]: [
-//       //     { mobile: processedIdentifier },
-//       //     Sequelize.where(Sequelize.fn('LOWER', Sequelize.col('email')), Sequelize.fn('LOWER', processedIdentifier)),
-//       //   ],
-//       // },
-//       where: {
-//         [Sequelize.or]: [
-//           { email: processedIdentifier },
-//           { mobileNumber: processedIdentifier },
-//         ],
-//       },
-//     });
-
-//     // Check if the user exists
-//     if (!user) {
-//       return res.status(401).json({
-//         error:
-//           "Invalid credentials. Please check your email/mobileNumber and password.",
-//       });
-//     }
-
-//     // Verify the hashed password
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       return res.status(401).json({
-//         error:
-//           "Invalid credentials. Please check your email/mobileNumber and password.",
-//       });
-//     }
-
-//     res.json({
-//       message: "Login successful!",
-//       user,
-//     });
-//   } catch (error) {
-//     res.status(500).send({
-//       message: "Signin failed. Please check your input and try again.",
-//       error: error.message,
-//     });
-//   }
-// });
-
-
 // login with email
-authRouter.post("/login", async (req, res) => {
+adminRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -153,7 +78,7 @@ authRouter.post("/login", async (req, res) => {
   console.log(email);
 
   try {
-    const user = await Authenticate.findOne({
+    const user = await Admin.findOne({
       where: {
          email: email,
       },
@@ -176,20 +101,12 @@ authRouter.post("/login", async (req, res) => {
           "Invalid credentials. Please check your password.",
       });
     }
-    if(user){
-      res.status(201).json({
-        message: "Login successful!",
-      id: user.id,
-      fname: user.fname,
-      email: user.email,
-      token: generateJwtToken(user),
 
-      })
-    }
-    // res.json({
-    //   message: "Login successful!",
-    //   user,
-    // });
+    res.json({
+      message: "Login successful!",
+      user,
+      token: generateJwtToken(user),
+    });
   } catch (error) {
     res.status(500).send({
       message: "Signin failed. Please check your input and try again.",
@@ -199,9 +116,9 @@ authRouter.post("/login", async (req, res) => {
 });
 
 // Get all users route
-authRouter.get("/users", async (req, res) => {
+adminRouter.get("/users", async (req, res) => {
   try {
-    const users = await Authenticate.findAll();
+    const users = await Admin.findAll();
 
     res.json({
       users,
@@ -215,12 +132,12 @@ authRouter.get("/users", async (req, res) => {
 });
 
 //delete user by id
-authRouter.delete("/users/:id", async (req, res) => {
+adminRouter.delete("/users/:id", async (req, res) => {
   const userId = req.params.id;
 
   try {
     // Find the user by ID
-    const user = await Authenticate.findByPk(userId);
+    const user = await Admin.findByPk(userId);
 
     // Check if the user exists
     if (!user) {
@@ -243,4 +160,4 @@ authRouter.delete("/users/:id", async (req, res) => {
   }
 });
 
-module.exports = authRouter;
+module.exports = adminRouter;

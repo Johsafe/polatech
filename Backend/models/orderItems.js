@@ -4,10 +4,10 @@ const { Products } = require("../models");
 module.exports = (sequelize, DataTypes) => {
   const OrderItems = sequelize.define("OrderItems", {
     orderId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    productId: {
+    prodID: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -27,10 +27,9 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
-OrderItems.associate = function(models) {
+  OrderItems.associate = function (models) {
     OrderItems.belongsTo(models.Order);
     OrderItems.belongsTo(models.Products);
-
   };
   return OrderItems;
 };

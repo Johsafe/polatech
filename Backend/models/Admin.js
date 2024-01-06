@@ -1,10 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const Authenticate = sequelize.define("Authenticate", {
+  const Admin = sequelize.define("Admin", {
     fname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    sname: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -22,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
     mobile: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,    
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   });
-  return Authenticate;
+  return Admin;
 };

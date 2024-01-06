@@ -1,68 +1,52 @@
 const express = require("express");
-const axios = require("axios");
-const { generateToken } = require("../middleware/generateToken");
+const { generateOauthToken } = require("../middleware/generateToken");
+const { initiatePayment } = require("../services/SafaricomTransaction");
 const stkRouter = express.Router();
 
 //send a stk push
-stkRouter.post("/", generateToken, async (req, res) => {
-  const phone = req.body.phone.substring(1);
-  const amount = req.body.amount;
+stkRouter.post('/',generateOauthToken, async (req, res) => {
+  try {
+    const phoneNumber = req.body.phone.substring(1);
+    const amount = req.body.amount;
+    // const callbackUrl = process.env.CALLBACK_URL;
+    const callbackUrl = "https://every-lions-spend.loca.lt/callback"
 
-  // generating time stamp
-  const date = new Date();
-  const timestamp =
-    date.getFullYear() +
-    ("0" + (date.getMonth() + 1)).slice(-2) +
-    ("0" + date.getDate()).slice(-2) +
-    ("0" + date.getHours()).slice(-2) +
-    ("0" + date.getMinutes()).slice(-2) +
-    ("0" + date.getSeconds()).slice(-2);
+    // Validate amount and phoneNumber as needed
 
-  const shortcode = process.env.PAYBILL;
-  const passkey = process.env.PASS_KEY;
+    const paymentResult = await initiatePayment(amount, phoneNumber,callbackUrl);
 
-  const password = new Buffer.from(shortcode + passkey + timestamp).toString(
-    "base64"
-  );
-  // res.json(password)
-
-  await axios
-    .post(
-      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
-      {
-        BusinessShortCode: shortcode, //for Till use store number
-        Password: password,
-        Timestamp: timestamp,
-        TransactionType: "CustomerPayBillOnline", //for-till = CustomerBuyGoodsOnline
-        Amount: amount,
-        PartyA: `254${phone}`, //owner phone --send of the message
-        PartyB: shortcode, //bussiness paybill
-        PhoneNumber: `254${phone}`, //receipient
-        CallBackURL: "https://chubby-cameras-feel.loca.lt/callback",
-        AccountReference: `254${phone}`, //account no./name
-        TransactionDesc: "Test", //
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${req.accessToken}`,
-          //   Authorization: "Bearer OAaElZCDBzeEKoGVr5kPP7vXdGtT",
-        },
-      }
-    )
-    .then((data) => {
-      console.log(data.data);
-      res.status(200).json(data.data);
-    })
-    .catch((err) => {
-      console.log(err.message);
-      res.status(400).json(err.message);
+    res.json({
+      message: 'Payment initiated successfully',
+      paymentResult,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: 'Error initiating payment',
+      error: error.message,
+    });
+  }
 });
 
 // response from safaricom
 stkRouter.post("/callback", (req, res) => {
-  const callbackData = req.body;
-  console.log(callbackData);
+  try {
+    // Handle the callback data received from Safaricom
+    const callbackData = req.body;
+    console.log('Safaricom payment callback data:', callbackData.Body);
+    if(!callbackData.Body.stkCallback.CallbackMetadata){
+      console.log(callbackData.Body);
+      return res.json("ok");
+    }
+    console.log(callbackData.Body.stkCallback.CallbackMetadata);
+    // Implement your business logic for processing the callback data
+    // For example, update the order status in your database, send a notification, etc.
+
+    res.json({ message: 'Callback received successfully' });
+  } catch (error) {
+    console.error('Safaricom callback error:', error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 module.exports = stkRouter;

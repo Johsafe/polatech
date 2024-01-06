@@ -1,9 +1,10 @@
 //middleware generateToken
 
 const { default: axios } = require("axios");
+const jwt = require("jsonwebtoken");
 
-//generate oauth Token generation
-const generateToken = async (req, res, next) => {
+//generate oauth safaricom Token generation
+module.exports.generateOauthToken = async (req, res, next) => {
   const secret = process.env.CONSUMER_SECRET;
   const consumer = process.env.CONSUMER_KEY;
   const auth = Buffer.from(consumer + ":" + secret).toString("base64");
@@ -17,6 +18,7 @@ const generateToken = async (req, res, next) => {
     });
 
     req.accessToken = response.data.access_token; // Attach the token to the request
+    token = req.accessToken;
     next();
   } catch (err) {
     console.error(err);
@@ -24,4 +26,17 @@ const generateToken = async (req, res, next) => {
   }
 };
 
-module.exports = { generateToken };
+//generate jwtToken
+module.exports.generateJwtToken = (user) => {
+  return jwt.sign(
+    {
+      id: user.id,
+      fname: user.fname,
+      email: user.email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "30d",
+    }
+  );
+};
