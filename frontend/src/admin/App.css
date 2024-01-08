@@ -1,0 +1,149 @@
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: block;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+} */
+
+/* UserScreen */
+a,
+a:hover,
+a:focus {
+  color: inherit;
+}
+
+body {
+  background-color: #f1f2f3;
+}
+.profile-card-2 {
+  max-width: 180px;
+  height: 250px;
+  background-color: #fff;
+  box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
+  background-position: center;
+  overflow: hidden;
+  position: relative;
+  margin: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.profile-card-2 img {
+  transition: all linear 0.25s;
+  width: 100%;
+}
+
+.profile-card-2 .profile-name {
+  position: absolute;
+  left: 30px;
+  bottom: 40px;
+  font-size: 22px;
+  color: #fff;
+  text-shadow: 0px 0px 20px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+  transition: all linear 0.25s;
+}
+
+.profile-card-2 .profile-icons {
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  color: #fff;
+  transition: all linear 0.25s;
+}
+
+.profile-card-2 .profile-username {
+  position: absolute;
+  bottom: 20px;
+  left: 30px;
+  color: #fff;
+  font-size: 13px;
+  transition: all linear 0.25s;
+}
+
+.profile-card-2 .profile-icons .fa {
+  margin: 5px;
+}
+
+.profile-card-2:hover img {
+  filter: grayscale(100%);
+}
+
+.profile-card-2:hover .profile-name {
+  bottom: 90px;
+}
+
+.profile-card-2:hover .profile-username {
+  bottom: 70px;
+}
+
+.profile-card-2:hover .profile-icons {
+  right: 40px;
+}
+
+/* MarkOrderScreen */
+
+.cardheader {
+  display: flex;
+  background: rgb(12, 139, 12);
+  color: white;
+  justify-content: space-between;
+  padding: 0.5rem;
+  height: 5rem;
+}
+.date {
+  font-weight: 900;
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+.subheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 0.1rem solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+.orderheaderdetails {
+  padding: 0.7rem;
+  display: flex;
+  justify-content: space-around;
+  font-size: 1rem;
+  margin: 0;
+  gap: 1rem;
+}
+.orderheaderdetails h5 {
+  font-weight: 700;
+  font-size: 1rem;
+}
+.orderheaderdetails p {
+  margin-bottom: 3px;
+}
+
+.orderbody {
+  display: flex;
+  gap: 3rem;
+  padding: 1rem;
+  margin-left: 2rem;
+}
