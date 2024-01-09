@@ -7,20 +7,21 @@ const { Order, OrderItems, Products, Authenticate } = require("../models");
 const { isAuth } = require("../middleware/auth");
 
 //generate orderId
-const generateOrderCode = ()=> {
+const generateOrderCode = () => {
   // Declare a characters variable which stores all characters
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let OrderCode = "";
   for (let i = 0; i < 8; i++) {
-      OrderCode += characters[Math.floor(Math.random() * characters.length)];
+    OrderCode += characters[Math.floor(Math.random() * characters.length)];
   }
   // Append the current timestamp to the Order code
   OrderCode += Date.now().toString();
   return OrderCode;
-}
+};
 
 //Create order
-orderRouter.post("/order",isAuth, async (req, res) => {
+orderRouter.post("/order", isAuth, async (req, res) => {
   try {
     const { userId, products } = req.body;
 
@@ -32,8 +33,7 @@ orderRouter.post("/order",isAuth, async (req, res) => {
 
     // Create a new order
     const orderId = generateOrderCode();
-    const newOrder = await Order.create({ orderId,userId });
-    console.log(orderId , userId)
+    const newOrder = await Order.create({ orderId, userId });
 
     // Calculate total amount
     let totalAmount = 0;
@@ -42,7 +42,7 @@ orderRouter.post("/order",isAuth, async (req, res) => {
     const productsInOrder = await Products.findAll({
       where: {
         id: {
-          [Op.in]: products.map((product) => product.prodID),
+          [Op.in]: products.map((product) => product.productId),
         },
       },
     });
@@ -50,19 +50,27 @@ orderRouter.post("/order",isAuth, async (req, res) => {
     // Create order items for each product in the order
     const orderItems = await Promise.all(
       productsInOrder.map(async (product, index) => {
-        const { prodID, quantity } = products[index];
+        const { productId, quantity } = products[index];
 
         // Check if the product exists
         if (!product) {
-          throw new Error(`Product with ID ${prodID} not found`);
+          throw new Error(`Product with ID ${productId} not found`);
+        }
+
+        // Check if the product has sufficient stock
+        if (product.inStock < quantity) {
+          throw new Error(`Product with ID ${productId} is out of stock`);
         }
 
         totalAmount += quantity * product.price;
 
+        // Update product stock
+        await Products.update({ inStock: product.inStock - quantity }, { where: { id: productId } });
+
         // Create an order item for the product
         return OrderItems.create({
           orderId: newOrder.orderId,
-          prodID,
+          productId,
           quantity,
           price: product.price,
         });
@@ -87,7 +95,7 @@ orderRouter.post("/order",isAuth, async (req, res) => {
 });
 
 // Update order by ID
-orderRouter.put("/orders/:orderId",isAuth, async (req, res) => {
+orderRouter.put("/orders/:orderId", isAuth, async (req, res) => {
   try {
     const orderId = req.params.orderId;
     const { status } = req.body;
@@ -96,7 +104,7 @@ orderRouter.put("/orders/:orderId",isAuth, async (req, res) => {
       include: [
         {
           model: OrderItems,
-          include:[Products],
+          include: [Products],
         },
       ],
     });
@@ -135,7 +143,7 @@ orderRouter.get("/orders", async (req, res) => {
 });
 
 // Get order by ID
-orderRouter.get("/orders/:orderId",isAuth, async (req, res) => {
+orderRouter.get("/orders/:orderId", async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId, {
       include: [
@@ -146,16 +154,41 @@ orderRouter.get("/orders/:orderId",isAuth, async (req, res) => {
       ],
     });
 
+    console.log("Fetched Order:", order);
+
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-
     res.json(order);
   } catch (error) {
     console.error(error);
     res
       .status(500)
       .json({ message: "Error fetching order", error: error.message });
+  }
+});
+
+//Find products of a particular order
+orderRouter.get("/orders/:orderId/products", async (req, res) => {
+  try {
+    const orderItems = await OrderItems.findAll({
+      where: { orderId: req.params.orderId },
+      include: [Products],
+    });
+
+    if (!orderItems || orderItems.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No products found for the order" });
+    }
+
+    res.json(orderItems.map((item) => item.Product));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error fetching products for the order",
+      error: error.message,
+    });
   }
 });
 
@@ -190,7 +223,7 @@ orderRouter.get("/user/:userId", async (req, res) => {
 });
 
 // Delete order by ID
-orderRouter.delete("/orders/:orderId",isAuth, async (req, res) => {
+orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId);
     if (!order) {
@@ -207,7 +240,7 @@ orderRouter.delete("/orders/:orderId",isAuth, async (req, res) => {
 });
 
 // Delete order and OrderItems by ID
-orderRouter.delete("/orders/:orderId",isAuth, async (req, res) => {
+orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId, {
       include: [OrderItems],
@@ -233,5 +266,6 @@ orderRouter.delete("/orders/:orderId",isAuth, async (req, res) => {
       .json({ message: "Error deleting order", error: error.message });
   }
 });
+
 
 module.exports = orderRouter;

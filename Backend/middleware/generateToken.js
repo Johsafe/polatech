@@ -22,7 +22,7 @@ module.exports.generateOauthToken = async (req, res, next) => {
     next();
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to generate access token" });
+    res.status(500).json({ error: "Failed to generate oauth token" });
   }
 };
 

@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     inStock: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0,
     },
     description: {
       type: DataTypes.TEXT,
@@ -32,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Products.associate = function (models) {
     Products.hasMany(models.OrderItems);
+    // Products.belongsTo(models.OrderItems)
   }
 
   return Products;

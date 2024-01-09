@@ -1,13 +1,10 @@
-// models/orderItem.js
-const { Products } = require("../models");
-
 module.exports = (sequelize, DataTypes) => {
   const OrderItems = sequelize.define("OrderItems", {
     orderId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    prodID: {
+    productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
