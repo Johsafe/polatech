@@ -203,9 +203,9 @@ authRouter.get("/users", async (req, res) => {
   try {
     const users = await Authenticate.findAll();
 
-    res.json({
-      users,
-    });
+    res.json(
+      users
+    );
   } catch (error) {
     console.error("Get all users error:", error);
     res.status(500).json({

@@ -161,6 +161,49 @@ productRouter.put('/:productId',isAuth, multerUpload.single('image'), async (req
   }
 });
 
+//update product stock
+productRouter.put("/:productId", async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const { newStock } = req.body; // Assuming you pass the new stock value in the request body
+
+    // Validate that productId is a positive integer
+    if (!productId || isNaN(productId) || productId <= 0) {
+      return res.status(400).json({ message: "Invalid productId" });
+    }
+
+    // Validate that newStock is a non-negative integer
+    // if (isNaN(newStock) || newStock < 0) {
+    //   return res.status(400).json({ message: "Invalid newStock value" });
+    // }
+
+    // Update the stock of the product
+    const [affectedRows] = await Products.update(
+      { inStock: newStock },
+      { where: { id: productId } }
+    );
+
+    // Check if the product was found and updated
+    if (affectedRows === 0) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Fetch the updated product
+    const updatedProduct = await Products.findByPk(productId);
+
+    // Send the updated product as a JSON response
+    res.json(updatedProduct);
+    
+  } catch (error) {
+    console.error(err);
+    res.status(500).json({
+      message: 'Error updating product stock',
+      error: err.message,
+    });
+  }
+
+});
+
 module.exports = productRouter;
 
 // create a new product: create(object)

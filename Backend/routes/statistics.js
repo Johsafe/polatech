@@ -16,7 +16,7 @@ statisticsRouter.get("/out-of-stock", async (req, res) => {
     if (outOfStockProducts === 0) {
       return res.status(404).json({ message: "No products found" });
     }
-    res.json({ outOfStockProducts });
+    res.json(outOfStockProducts);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -35,7 +35,7 @@ statisticsRouter.get("/out-of-stock-count", async (req, res) => {
       },
     });
 
-    res.json({ outOfStockProductCount });
+    res.json(outOfStockProductCount || 0);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -49,7 +49,7 @@ statisticsRouter.get("/out-of-stock-count", async (req, res) => {
 statisticsRouter.get("/total-product-count", async (req, res) => {
   try {
     const totalProductCount = await Products.count();
-    res.json({ totalProductCount });
+    res.json(totalProductCount || 0);
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -65,7 +65,7 @@ statisticsRouter.get("/total-orders", async (req, res) => {
   try {
     const totalOrders = await Order.count();
 
-    res.json({ totalOrders });
+    res.json(totalOrders || 0);
   } catch (error) {
     console.error(error);
     res
@@ -78,7 +78,7 @@ statisticsRouter.get("/total-sold", async (req, res) => {
   try {
     const totalSold = await OrderItems.sum("quantity");
 
-    res.json({ totalSold });
+    res.json(totalSold || 0);
   } catch (error) {
     console.error(error);
     res
@@ -92,7 +92,7 @@ statisticsRouter.get("/total-amount-sold", async (req, res) => {
     try {
       const totalAmountSold = await Order.sum('totalAmount');
   
-      res.json({ totalAmountSold });
+      res.json(totalAmountSold || 0);
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error fetching total amount sold", error: error.message });

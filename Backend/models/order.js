@@ -1,9 +1,6 @@
-// models/Order.js
-const Products = require("./Products");
-
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define("Order", {
-    orderId: {
+    id: {
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true,
@@ -15,26 +12,50 @@ module.exports = (sequelize, DataTypes) => {
     },
     totalAmount: {
       type: DataTypes.FLOAT,
-      allowNull: true, // You might want to set this to false based on your business logic
+      allowNull: false,
+      validate: {
+        min: 0,
+      },
+      defaultValue: 0,
     },
     mobile: {
       type: DataTypes.STRING,
       allowNull: true,
       defaultValue: "254",
     },
-    status: {
+    orderStatus: {
       type: DataTypes.STRING,
       defaultValue: "pending",
       validate: {
         isIn: [["pending", "completed"]],
       },
     },
+    paymentMethod: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      defaultValue: "M-pesa",
+    },
+    isPaid: {
+        type: DataTypes.BOOLEAN,  
+        defaultValue: false,
+      },
+      shippingAddress: {
+        type: DataTypes.JSON, 
+        allowNull: false,
+        defaultValue: {
+          fullName: "",
+          address: "",
+          city: "",
+          postalCode: "",
+          county: "",
+          email:"",
+        },
+      },
   });
 
-  //relationships
   Order.associate = function (models) {
     Order.hasMany(models.OrderItems);
-    // Order.belongsTo(models.Authenticate);
   };
+
   return Order;
 };

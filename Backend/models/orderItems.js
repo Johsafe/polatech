@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    productId: {
+    pdctId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -28,5 +28,6 @@ module.exports = (sequelize, DataTypes) => {
     OrderItems.belongsTo(models.Order);
     OrderItems.belongsTo(models.Products);
   };
+
   return OrderItems;
 };
