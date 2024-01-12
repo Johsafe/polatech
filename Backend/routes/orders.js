@@ -1,12 +1,7 @@
 const express = require("express");
 const { Op } = require("sequelize");
 const orderRouter = express.Router();
-const {
-  Order,
-  OrderItems,
-  Products,
-  Authenticate,
-} = require("../models");
+const { Order, OrderItems, Products, Authenticate } = require("../models");
 const { isAuth } = require("../middleware/auth");
 
 //generate orderId
@@ -26,7 +21,7 @@ const generateOrderCode = () => {
 //Create order
 orderRouter.post("/order", isAuth, async (req, res) => {
   try {
-    const { userId, products,shippingAddress } = req.body;
+    const { userId, products, shippingAddress } = req.body;
 
     // Check if the user exists
     const userExists = await Authenticate.findByPk(userId);
@@ -36,7 +31,7 @@ orderRouter.post("/order", isAuth, async (req, res) => {
 
     // Create a new order
     const id = generateOrderCode();
-    const newOrder = await Order.create({ id, userId,shippingAddress });
+    const newOrder = await Order.create({ id, userId, shippingAddress });
 
     // Calculate total amount
     let totalAmount = 0;
@@ -102,141 +97,140 @@ orderRouter.post("/order", isAuth, async (req, res) => {
 
 // Get all orders
 orderRouter.get("/orders", async (req, res) => {
-    try {
-      const orders = await Order.findAll();
-      res.json(orders);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "Error fetching order", error: error.message });
-    }
-  });
+  try {
+    const orders = await Order.findAll();
+    res.json(orders);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching order", error: error.message });
+  }
+});
 
 // Get order by ID
-orderRouter.get("/orders/:orderId", async (req, res) => {
-    try {
-      const order = await Order.findByPk(req.params.orderId, {
-        include: [
-          {
-            model: OrderItems,
-            include: [Products],
-          },
-        ],
-      });
-  
-      console.log("Fetched Order:", order);
-  
-      if (!order) {
-        return res.status(404).json({ message: "Order not found" });
-      }
-      res.json(order);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "Error fetching order", error: error.message });
-    }
-  });
+orderRouter.get("/orders/:id", async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.findByPk(orderId, {
+      include: [
+        {
+          model: OrderItems,
+          include: [Products],
+        },
+      ],
+    });
+    //   console.log("Fetched Order:", order);
 
-  
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching order", error: error.message });
+  }
+});
+
 //Find products of a particular order
 orderRouter.get("/orders/:orderId/products", async (req, res) => {
-    try {
-      const orderItems = await OrderItems.findAll({
-        where: { orderId: req.params.orderId },
-        include: [Products],
-      });
-  
-      if (!orderItems || orderItems.length === 0) {
-        return res
-          .status(404)
-          .json({ message: "No products found for the order" });
-      }
-  
-      res.json(orderItems.map((item) => item.Product));
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({
-        message: "Error fetching products for the order",
-        error: error.message,
-      });
+  try {
+    const orderItems = await OrderItems.findAll({
+      where: { orderId: req.params.orderId },
+      include: [Products],
+    });
+
+    if (!orderItems || orderItems.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No products found for the order" });
     }
-  });
-  
-  // Get order by User
-  orderRouter.get("/user/:userId", async (req, res) => {
-    try {
-      const userId = req.params.userId;
-  
-      // Check if the user exists
-      const userExists = await Authenticate.findByPk(userId);
-      if (!userExists) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      const userOrders = await Order.findAll({
-        where: { userId },
-        include: [
-          {
-            model: OrderItems,
-            include: [Products],
-          },
-        ],
-      });
-  
-      res.json(userOrders);
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "Error fetching order", error: error.message });
+
+    res.json(orderItems.map((item) => item.Product));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error fetching products for the order",
+      error: error.message,
+    });
+  }
+});
+
+// Get order by User
+orderRouter.get("/user/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Check if the user exists
+    const userExists = await Authenticate.findByPk(userId);
+    if (!userExists) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
-  
-  // Delete order by ID
-  orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
-    try {
-      const order = await Order.findByPk(req.params.orderId);
-      if (!order) {
-        return res.status(404).json({ error: "Order not found" });
-      }
-      await order.destroy();
-      res.json({ message: "Order deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "Error deleting order", error: error.message });
-    }
-  });
-  
-  // Delete order and OrderItems by ID
-  orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
-    try {
-      const order = await Order.findByPk(req.params.orderId, {
-        include: [OrderItems],
-      });
-  
-      if (!order) {
-        return res.status(404).json({ error: "Order not found" });
-      }
-      // Delete the associated order items first
-      await OrderItems.destroy({
-        where: {
-          orderId: order.id,
+
+    const userOrders = await Order.findAll({
+      where: { userId },
+      include: [
+        {
+          model: OrderItems,
+          include: [Products],
         },
-      });
-      // Then, delete the order itself
-      await order.destroy();
-  
-      res.json({ message: "Order deleted successfully" });
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ message: "Error deleting order", error: error.message });
+      ],
+    });
+
+    res.json(userOrders);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching order", error: error.message });
+  }
+});
+
+// Delete order by ID
+orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
+  try {
+    const order = await Order.findByPk(req.params.orderId);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
     }
-  });
+    await order.destroy();
+    res.json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error deleting order", error: error.message });
+  }
+});
+
+// Delete order and OrderItems by ID
+orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
+  try {
+    const order = await Order.findByPk(req.params.orderId, {
+      include: [OrderItems],
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    // Delete the associated order items first
+    await OrderItems.destroy({
+      where: {
+        orderId: order.id,
+      },
+    });
+    // Then, delete the order itself
+    await order.destroy();
+
+    res.json({ message: "Order deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error deleting order", error: error.message });
+  }
+});
 
 module.exports = orderRouter;
