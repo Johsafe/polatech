@@ -1,9 +1,24 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import SubLayout from "../Layout/SubLayout";
 
 export default function UsersScreen() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetched = await fetch(`http://localhost:8000/authenicate/users`);
+        const jsonData = await fetched.json();
+        setUsers(jsonData);
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    fetchProducts();
+  }, []);
   return (
     <div>
       <SubLayout>
@@ -22,19 +37,24 @@ export default function UsersScreen() {
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Name</th>
+                  <th scope="col">firstName</th>
+                  <th scope="col">LastName</th>
                   <th scope="col">Email</th>
                   <th scope="col">phone</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">#</th>
-                  <td>Jose</td>
-                  <td>Jose@gmail.com</td>
-                  <td>254345678</td>
-                </tr>
-              </tbody>
+
+              {users.map((user) => (
+                <tbody key={user.id}>
+                  <tr>
+                    <th scope="row">#</th>
+                    <td>{user.fname}</td>
+                    <td>{user.sname}</td>
+                    <td>{user.email}</td>
+                    <td>{user.mobile}</td>
+                  </tr>
+                </tbody>
+              ))}
             </table>
           </div>
         </Container>

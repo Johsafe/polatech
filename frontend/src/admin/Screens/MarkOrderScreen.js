@@ -1,71 +1,94 @@
-import { LocalShipping, Person, Place, Print } from '@mui/icons-material';
-import { Avatar, Card } from '@mui/material';
-import React from 'react';
-import { Container } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-
+import { LocalShipping, Person, Place, Print } from "@mui/icons-material";
+import { Avatar, Card } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
+import { Link, useParams } from "react-router-dom";
+import moment from "moment";
 
 export default function MarkOrderScreen() {
+  const params = useParams();
+  const [order, setOrder] = useState([]);
+  //get an order
+  async function getOrder() {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/order/orders/${params.id}`
+      );
+      const getorder = await response.json();
+      setOrder(getorder);
+    } catch (err) {
+      // toast.error(getError(err));
+      console.error(err.message);
+    }
+  }
+  useEffect(() => {
+    getOrder();
+  }, []);
   const styleIcon = {
-    fontSize: '4.5rem',
-    cursor: 'pointer',
-    borderRadius: '50%',
-    backgroundColor: '#dddddd',
-    padding: '20px',
-    color: 'green',
+    fontSize: "4.5rem",
+    cursor: "pointer",
+    borderRadius: "50%",
+    backgroundColor: "#dddddd",
+    padding: "20px",
+    color: "green",
   };
   return (
     <div>
       {/* <SubLayout> */}
-        <Container>
-          <Helmet>
-            <title>Order Details</title>
-          </Helmet>
+      <Container>
+        <Helmet>
+          <title>Order Details</title>
+        </Helmet>
 
-          <div>
-            <Link to='/orders'><button
+        <div>
+          <Link to="/orders">
+            <button
               style={{
-                width: '200px',
-                border: 'none',
-                borderRadius: '10px',
-                color: 'white',
-                cursor: 'pointer',
-                background: 'black',
-                padding: '7px',
-                marginBottom: '1rem',
+                width: "200px",
+                border: "none",
+                borderRadius: "10px",
+                color: "white",
+                cursor: "pointer",
+                background: "black",
+                padding: "7px",
+                marginBottom: "1rem",
               }}
             >
               Back To Order
-            </button></Link>
+            </button>
+          </Link>
+          {order ? (
             <Card>
               <div className="cardheader">
                 <div>
-                  <p className="date">Nov 13 2022</p>
-                  <p>Order ID: 6363d7e36d07d3fe2ae5f5cf</p>
+                  <p className="date">
+                    {moment(order.createdAt).format("MMM Do YY")}
+                  </p>
+                  <p>Order ID: {order.id}</p>
+                  <p>Status: {order.orderStatus}</p>
                 </div>
 
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '2rem',
-                    marginRight: '2rem',
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "2rem",
+                    marginRight: "2rem",
                   }}
                 >
                   <div lass="mb-2">
                     <select class="form-select" aria-label=" select example">
                       <option selected>Change Status</option>
-                      <option value="1">Processing</option>
-                      <option value="2">Delivered</option>
-                      <option value="3">Awaiting Payment</option>
-                      <option value="4">Shipped</option>
-                      <option value="5">Confirmed</option>
-
+                      <option value="pending">pending</option>
+                      <option value="completed">completed</option>
                     </select>
                   </div>
 
-                 <button className='btn btn-success'> <Print /></button> 
+                  <button className="btn btn-success">
+                    {" "}
+                    <Print />
+                  </button>
                 </div>
               </div>
 
@@ -77,7 +100,10 @@ export default function MarkOrderScreen() {
                     </div>
                     <div>
                       <h5>Customer</h5>
-                      <p>Mwamuye Joseph</p>
+                      <p>
+                        {order.shippingAddress &&
+                          order.shippingAddress.fullName}
+                      </p>
                       <p>Mwamuye@gmail.com</p>
                     </div>
                   </div>
@@ -89,15 +115,15 @@ export default function MarkOrderScreen() {
                       <h5>Order info</h5>
                       <p>
                         <strong>Shipping: </strong>
-                        Mombasa
+                        {order.shippingAddress && order.shippingAddress.city}
                       </p>
                       <p>
                         <strong>Pay Method : </strong>
-                        Mpesa
+                        {order.paymentMethod}
                       </p>
                       <p>
                         <strong>Paid: </strong>
-                        Not paid
+                        not paid
                       </p>
                     </div>
                   </div>
@@ -109,9 +135,13 @@ export default function MarkOrderScreen() {
                       <h5>Deliver to</h5>
                       <p>
                         <strong>Address: </strong>
-                        Likoni ,Ujamaa
+                        {order.shippingAddress && order.shippingAddress.address}
                       </p>
-                      <p>09876,Mombasa</p>
+                      <p>
+                        {order.shippingAddress &&
+                          order.shippingAddress.postalCode}
+                        ,{order.shippingAddress && order.shippingAddress.county}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -119,46 +149,50 @@ export default function MarkOrderScreen() {
 
               <div>
                 <div className="orderbody">
-                  <div style={{ width: '60%'}}>
+                  <div style={{ width: "60%" }}>
                     <table class="table table-hover">
                       <thead>
                         <tr>
                           <th scope="col">#</th>
-                          <th scope="col">Name</th>
+                          <th scope="col">Title</th>
                           <th scope="col">Quantity</th>
                           <th scope="col">Price</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">
-                            <Avatar>P</Avatar>
-                          </th>
-                          <td>Mango</td>
-                          <td>4</td>
-                          <td>Ksh.80</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">
-                            <Avatar>P</Avatar>
-                          </th>
-                          <td>Mango</td>
-                          <td>4</td>
-                          <td>Ksh.80</td>
-                        </tr>
-                      </tbody>
+                      {order.OrderItems &&
+                        order.OrderItems.map((item) => (
+                          <tbody>
+                            <tr>
+                              <th scope="row">
+                                <Avatar>
+                                  <img
+                                    src=""
+                                    style={{
+                                      width: "100%",
+                                      height: "90px",
+                                    }}
+                                    alt=""
+                                  />
+                                </Avatar>
+                              </th>
+                              <td>Mango</td>
+                              <td>{item.quantity}</td>
+                              <td>Ksh.{item.price}</td>
+                            </tr>
+                          </tbody>
+                        ))}
                     </table>
                   </div>
                   <div className="cost">
                     <h4>Order Summary</h4>
-                    <div className="summary" style={{ width: '300px' }}>
+                    <div className="summary" style={{ width: "300px" }}>
                       <table class="table table-hover">
                         <tbody>
                           <tr>
                             <td>
                               <p>Subtotal</p>
                             </td>
-                            <td>Ksh.160</td>
+                            <td>{order.totalAmount}</td>
                           </tr>
 
                           <tr>
@@ -171,7 +205,7 @@ export default function MarkOrderScreen() {
                             <td>
                               <p>Grand total</p>
                             </td>
-                            <td>Ksh.160</td>
+                            <td>{order.totalAmount}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -180,15 +214,15 @@ export default function MarkOrderScreen() {
                     <div>
                       <button
                         style={{
-                          border: 'none',
-                          padding: '0.5rem 0',
-                          width: '300px',
-                          borderRadius: '10px',
-                          color: 'white',
-                          cursor: 'pointer',
-                          background: 'green',
+                          border: "none",
+                          padding: "0.5rem 0",
+                          width: "300px",
+                          borderRadius: "10px",
+                          color: "white",
+                          cursor: "pointer",
+                          background: "green",
                           // padding: '7px',
-                          marginBottom: '1rem',
+                          marginBottom: "1rem",
                         }}
                       >
                         Mark As Delivered
@@ -198,8 +232,11 @@ export default function MarkOrderScreen() {
                 </div>
               </div>
             </Card>
-          </div>
-        </Container>
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+      </Container>
       {/* </SubLayout> */}
     </div>
   );

@@ -108,7 +108,8 @@ body {
   color: white;
   justify-content: space-between;
   padding: 0.5rem;
-  height: 5rem;
+  height: 6rem;
+  font-weight: 550;
 }
 .date {
   font-weight: 900;

@@ -1,14 +1,35 @@
-import Avatar from '@mui/material/Avatar';
-import React from 'react';
-import { Container } from 'react-bootstrap';
-import { Helmet } from 'react-helmet-async';
-import SubLayout from '../Layout/SubLayout';
-import { Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ButtonGroup from '@mui/material/ButtonGroup';
+import Avatar from "@mui/material/Avatar";
+import React, { useEffect, useState } from "react";
+import { Container } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
+import SubLayout from "../Layout/SubLayout";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import ButtonGroup from "@mui/material/ButtonGroup";
+// import { toast } from 'react-toastify';
+// import axios from 'axios';
+
 export default function ProductScreen() {
+  const Info = JSON.parse(localStorage.getItem("Info"));
+
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetched = await fetch(`http://localhost:8000/product`);
+        const jsonData = await fetched.json();
+        setProducts(jsonData);
+      } catch (err) {
+        console.error(err.message);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+  
   return (
     <div>
       <SubLayout>
@@ -16,11 +37,17 @@ export default function ProductScreen() {
           <Helmet>
             <title>Products</title>
           </Helmet>
-          <div style={{ display: 'flex', justifyContent: 'space-between',marginBottom:'20px' }}>
-            <h1 style={{fontSize:"30px"}}>My Products</h1>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginBottom: "20px",
+            }}
+          >
+            <h1 style={{ fontSize: "30px" }}>My Products</h1>
             <div>
               <Link to="/add">
-                {' '}
+                {" "}
                 <button className="btn btn-success">Add Product</button>
               </Link>
             </div>
@@ -37,37 +64,47 @@ export default function ProductScreen() {
                   <th scope="col">Action</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">
-                    <Avatar>L</Avatar>
-                  </th>
-                  <td>Pavillion</td>
-                  <td>Lenovo</td>
-                  <td>20</td>
-                  <td>ksh 70000</td>
-                  <td>
-                    <div>
-                      <ButtonGroup
-                        variant="text"
-                        aria-label="text button group"
-                        style={{ display: 'flex' }}
-                      >
-                        {/* <Button>One</Button> */}
-                        <Button>
-                          <Link to="/edit">
-                            <EditIcon />
-                          </Link>
-                        </Button>
-                        <Button>
-                          <DeleteIcon style={{ color: 'red' }} />
-                        </Button>
-                      </ButtonGroup>
-                    </div>
-                  </td>
-                </tr>
-               
-              </tbody>
+              {products.map((product) => (
+                <tbody key={product.id}>
+                  <tr>
+                    <th scope="row">
+                      <Avatar>
+                        <img
+                          src={product.image}
+                          style={{
+                            width: "100%",
+                            height: "90px",
+                          }}
+                          alt={product.title}
+                        />
+                      </Avatar>
+                    </th>
+                    <td>{product.title}</td>
+                    <td>{product.brand}</td>
+                    <td>{product.inStock}</td>
+                    <td>{product.price}</td>
+                    <td>
+                      <div>
+                        <ButtonGroup
+                          variant="text"
+                          aria-label="text button group"
+                          style={{ display: "flex" }}
+                        >
+                          {/* <Button>One</Button> */}
+                          <Button>
+                            <Link to="/edit">
+                              <EditIcon />
+                            </Link>
+                          </Button>
+                          <Button>
+                            <DeleteIcon style={{ color: "red" }} />
+                          </Button>
+                        </ButtonGroup>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              ))}
             </table>
           </div>
         </Container>
