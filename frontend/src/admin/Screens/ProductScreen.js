@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import DeleteProductModel from "./DeleteProductModel";
 // import { toast } from 'react-toastify';
 // import axios from 'axios';
 
@@ -15,7 +16,7 @@ export default function ProductScreen() {
   const Info = JSON.parse(localStorage.getItem("Info"));
 
   const [products, setProducts] = useState([]);
-
+  //get all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -29,7 +30,6 @@ export default function ProductScreen() {
 
     fetchProducts();
   }, []);
-  
   return (
     <div>
       <SubLayout>
@@ -96,9 +96,7 @@ export default function ProductScreen() {
                               <EditIcon />
                             </Link>
                           </Button>
-                          <Button>
-                            <DeleteIcon style={{ color: "red" }} />
-                          </Button>
+                          <DeleteProductModel product={product} />
                         </ButtonGroup>
                       </div>
                     </td>

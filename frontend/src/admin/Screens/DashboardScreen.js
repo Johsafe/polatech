@@ -12,11 +12,8 @@ import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantity
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import PaidIcon from "@mui/icons-material/Paid";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
-import Button from "@mui/material/Button";
-import EditIcon from "@mui/icons-material/Edit";
-import ButtonGroup from "@mui/material/ButtonGroup";
-import { Link } from "react-router-dom";
 import { Divider } from "@mui/material";
+import EditStockModal from "./EditProductStock";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -52,7 +49,7 @@ export default function DashboardScreen() {
         );
         const jsonData = await fetched.json();
         setProductCount(jsonData);
-        console.log(jsonData);
+        // console.log(jsonData);
       } catch (err) {
         console.error(err.message);
       }
@@ -63,7 +60,7 @@ export default function DashboardScreen() {
         const fetched = await fetch(`http://localhost:8000/stats/total-sold`);
         const jsonData = await fetched.json();
         setOrderCount(jsonData);
-        console.log(jsonData);
+        // console.log(jsonData);
       } catch (err) {
         console.error(err.message);
       }
@@ -76,7 +73,7 @@ export default function DashboardScreen() {
         );
         const jsonData = await fetched.json();
         setOutofStockCount(jsonData);
-        console.log(jsonData);
+        // console.log(jsonData);
       } catch (err) {
         console.error(err.message);
       }
@@ -89,7 +86,7 @@ export default function DashboardScreen() {
         );
         const jsonData = await fetched.json();
         setTotalSales(jsonData);
-        console.log(jsonData);
+        // console.log(jsonData);
       } catch (err) {
         console.error(err.message);
       }
@@ -101,6 +98,9 @@ export default function DashboardScreen() {
     fetchOutofStockCount();
     fetchTotalSales();
   }, []);
+
+  // Edit product Stock
+
   return (
     <div>
       <SubLayout>
@@ -238,9 +238,7 @@ export default function DashboardScreen() {
                       <td>{product.price}</td>
                       <td>
                         <div>
-                          <Button>
-                            <EditIcon />
-                          </Button>
+                        <EditStockModal product={product} />
                         </div>
                       </td>
                     </tr>
