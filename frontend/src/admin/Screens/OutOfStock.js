@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
+// import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-// import Button from "@mui/material/Button";
+import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
+// import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
@@ -16,6 +18,10 @@ import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
+import Menu from "@mui/joy/Menu";
+import MenuButton from "@mui/joy/MenuButton";
+import MenuItem from "@mui/joy/MenuItem";
+import Dropdown from "@mui/joy/Dropdown";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import EditIcon from "@mui/icons-material/Edit";
 import ButtonGroup from "@mui/material/ButtonGroup";
@@ -24,21 +30,44 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+
+// import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+// import Avatar from "@mui/material/Avatar";
+// import Typography from "@mui/material/Typography";
+import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import PaidIcon from "@mui/icons-material/Paid";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import { styled } from "@mui/material/styles";
+// import { Divider } from "@mui/material";
+import moment from "moment";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
-import DeleteProductModel from "./DeleteProductModel";
+import EditStockModal from "./EditProductStock";
 
-export default function ProductScreen() {
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(2),
+  maxWidth: 250,
+  color: theme.palette.text.primary,
+}));
+
+export default function OutOfStock() {
   const [open, setOpen] = React.useState(false);
 
   const [products, setProducts] = React.useState([]);
-  //get all products
   React.useEffect(() => {
+    //get out-of-stock products
     const fetchProducts = async () => {
       try {
-        const fetched = await fetch(`http://localhost:8000/product`);
+        const fetched = await fetch(`http://localhost:8000/stats/out-of-stock`);
         const jsonData = await fetched.json();
         setProducts(jsonData);
       } catch (err) {
@@ -49,35 +78,6 @@ export default function ProductScreen() {
     fetchProducts();
   }, []);
 
-  // filter
-  const renderFilters = () => (
-    <React.Fragment>
-      <FormControl size="sm">
-        <FormLabel>Brand</FormLabel>
-        <Select
-          size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-        >
-          <Option value="pending">Hp</Option>
-          <Option value="Completed">Lenovo</Option>
-          <Option value="Completed">Dell</Option>
-          {/* <Option value="refunded">Refunded</Option>
-          <Option value="cancelled">Cancelled</Option> */}
-        </Select>
-      </FormControl>
-      <FormControl size="sm">
-        <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="pending">Printer</Option>
-          <Option value="pending">Desktop</Option>
-          <Option value="Completed">Laptop</Option>
-          <Option value="pending">Accesories</Option>
-        </Select>
-      </FormControl>
-    </React.Fragment>
-  );
   return (
     <React.Fragment>
       <Sheet
@@ -102,77 +102,7 @@ export default function ProductScreen() {
         >
           <FilterAltIcon />
         </IconButton>
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <ModalDialog aria-labelledby="filter-modal" layout="fullscreen">
-            <ModalClose />
-            <Typography id="filter-modal" level="h2">
-              Filters
-            </Typography>
-            <Divider sx={{ my: 2 }} />
-            <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {renderFilters()}
-              <Button color="primary" onClick={() => setOpen(false)}>
-                Submit
-              </Button>
-            </Sheet>
-          </ModalDialog>
-        </Modal>
       </Sheet>
-      {/* //header */}
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Breadcrumbs
-          size="sm"
-          aria-label="breadcrumbs"
-          separator={<ChevronRightRoundedIcon fontSize="sm" />}
-          sx={{ pl: 0 }}
-        >
-          <Link
-            underline="none"
-            color="neutral"
-            href="#some-link"
-            aria-label="Home"
-          >
-            <HomeRoundedIcon />
-          </Link>
-          <Link
-            underline="hover"
-            color="neutral"
-            href="#some-link"
-            fontSize={12}
-            fontWeight={500}
-          >
-            Dashboard
-          </Link>
-          <Typography color="primary" fontWeight={500} fontSize={12}>
-            Products
-          </Typography>
-        </Breadcrumbs>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          mb: 1,
-          gap: 1,
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { xs: "start", sm: "center" },
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography level="h2" component="h1">
-          Products
-        </Typography>
-        <Link to="/add">
-          <Button
-            color="primary"
-            // startDecorator={<AddIcon />}
-            size="sm"
-          >
-            Add Product
-          </Button>
-        </Link>
-      </Box>
-
       {/* search for products */}
       <Box
         className="SearchAndFilters-tabletUp"
@@ -193,9 +123,9 @@ export default function ProductScreen() {
             size="sm"
             placeholder="Search"
             startDecorator={<SearchIcon />}
+            style={{ width: "50%" }}
           />
         </FormControl>
-        {renderFilters()}
       </Box>
       <Sheet
         className="OrderTableContainer"
@@ -225,56 +155,44 @@ export default function ProductScreen() {
         >
           <thead>
             <tr>
+              <th style={{ width: 120, padding: "12px 6px" }}>#</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Title</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Brand</th>
               <th style={{ width: 140, padding: "12px 6px" }}>InStock</th>
               <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
-              <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
+              {/* <th style={{ width: 240, padding: "12px 6px" }}>Customer</th> */}
               <th style={{ width: 140, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
               <tr key={product.id}>
+                <td>
+                  <Typography level="body-xs">
+                    <Avatar
+                      size="40"
+                      color={Avatar.getRandomColor("sitebase", [
+                        "rgb(233, 150, 150)",
+                        "rgb(164, 231, 164)",
+                        "rgb(236, 224, 167)",
+                        "rgb(174, 185, 233)",
+                      ])}
+                      round={true}
+                      src={product.image}
+                      alt={product.title}
+                    />
+                  </Typography>
+                </td>
                 <td>{product.title}</td>
                 <td>{product.brand}</td>
                 <td>{product.inStock}</td>
                 <td>Ksh. {product.price}</td>
                 <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Typography level="body-xs">
-                      <Avatar
-                        size="40"
-                        color={Avatar.getRandomColor("sitebase", [
-                          "rgb(233, 150, 150)",
-                          "rgb(164, 231, 164)",
-                          "rgb(236, 224, 167)",
-                          "rgb(174, 185, 233)",
-                        ])}
-                        round={true}
-                        src={product.image}
-                        alt={product.title}
-                      />
-                    </Typography>
+                  <td>
                     <div>
-                      <Typography level="body-xs">{product.title}</Typography>
-                      <Typography level="body-xs">Laptop</Typography>
+                      <EditStockModal product={product} />
                     </div>
-                  </Box>
-                </td>
-                <td>
-                  <div>
-                    <ButtonGroup
-                      variant="text"
-                      aria-label="text button group"
-                      style={{ display: "flex" ,alignItems:'center',}}
-                    >
-                        <Link to="/edit">
-                          <EditIcon style={{color:'blue'}} />
-                        </Link>
-                      <DeleteProductModel product={product} />
-                    </ButtonGroup>
-                  </div>
+                  </td>
                 </td>
               </tr>
             ))}

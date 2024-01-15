@@ -34,6 +34,7 @@ export default function DeleteProductModel({ product }) {
       <Button onClick={() => setOpen(true)}>
         <DeleteForever sx={{ color: "red" }} />
       </Button>
+
       <Modal open={open} onClose={() => setOpen(false)}>
         <ModalDialog
           variant="outlined"

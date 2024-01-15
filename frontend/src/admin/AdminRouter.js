@@ -6,7 +6,6 @@ import { ToastContainer } from "react-toastify";
 //screens
 import DashboardScreen from "./Screens/DashboardScreen";
 import ProductScreen from "./Screens/ProductScreen";
-import CategoryScreen from "./Screens/CategoryScreen";
 import OrdersScreen from "./Screens/OrdersScreen";
 import UsersScreen from "./Screens/UsersScreen";
 import TransactionScreen from "./Screens/TransactionScreen";
@@ -14,7 +13,7 @@ import SideBar from "./Layout/sideBar";
 import AddProduct from "./Screens/AddProduct";
 import EditProductScreen from "./Screens/EditProductScreen";
 import MarkOrderScreen from "./Screens/MarkOrderScreen";
-import EditCategoryScreeen from "./Screens/EditCategoryScreeen";
+import OrderTable from "./Screens/OrdeTable";
 
 function AdminRouter() {
   return (
@@ -27,14 +26,15 @@ function AdminRouter() {
             <Route path="/" element={<DashboardScreen />} />
             <Route path="/dashboard" element={<DashboardScreen />} />
             <Route path="/product" element={<ProductScreen />} />
-            <Route path="/category" element={<CategoryScreen />} />
             <Route path="/orders" element={<OrdersScreen />} />
             <Route path="/transaction" element={<TransactionScreen />} />
             <Route path="/users" element={<UsersScreen />} />
             <Route path="/add" element={<AddProduct />} />
             <Route path="/edit" element={<EditProductScreen />} />
             <Route path="/:id/orders/mark" element={<MarkOrderScreen />} />
-            <Route path="/editCategory" element={<EditCategoryScreeen />} />
+            <Route path="/table" element={<OrderTable />} />
+            
+            
           </Routes>
         </SideBar>
       </Router>

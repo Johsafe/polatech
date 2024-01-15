@@ -1,11 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
+// import Avatar from "@mui/joy/Avatar";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-// import Button from "@mui/material/Button";
+import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
+// import Link from "@mui/joy/Link";
 import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
@@ -16,52 +18,75 @@ import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
+import Menu from "@mui/joy/Menu";
+import MenuButton from "@mui/joy/MenuButton";
+import MenuItem from "@mui/joy/MenuItem";
+import Dropdown from "@mui/joy/Dropdown";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
-import EditIcon from "@mui/icons-material/Edit";
-import ButtonGroup from "@mui/material/ButtonGroup";
 
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import SearchIcon from "@mui/icons-material/Search";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
-import DeleteProductModel from "./DeleteProductModel";
 
-export default function ProductScreen() {
+function RowMenu() {
+  return (
+    <Dropdown>
+      <MenuButton
+        slots={{ root: IconButton }}
+        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
+      >
+        <MoreHorizRoundedIcon />
+      </MenuButton>
+      <Menu size="sm" sx={{ minWidth: 140 }}>
+        <MenuItem>Edit</MenuItem>
+        <MenuItem>View</MenuItem>
+        <Divider />
+        <MenuItem color="danger">Delete</MenuItem>
+      </Menu>
+    </Dropdown>
+  );
+}
+
+export default function OrderTable() {
   const [open, setOpen] = React.useState(false);
 
-  const [products, setProducts] = React.useState([]);
-  //get all products
+  const [users, setUsers] = React.useState([]);
+
   React.useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchUsers = async () => {
       try {
-        const fetched = await fetch(`http://localhost:8000/product`);
+        const fetched = await fetch(`http://localhost:8000/authenicate/users`);
         const jsonData = await fetched.json();
-        setProducts(jsonData);
+        setUsers(jsonData);
       } catch (err) {
         console.error(err.message);
       }
     };
 
-    fetchProducts();
+    fetchUsers();
   }, []);
 
   // filter
   const renderFilters = () => (
     <React.Fragment>
       <FormControl size="sm">
-        <FormLabel>Brand</FormLabel>
+        <FormLabel>Status</FormLabel>
         <Select
           size="sm"
           placeholder="Filter by status"
           slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
         >
-          <Option value="pending">Hp</Option>
-          <Option value="Completed">Lenovo</Option>
-          <Option value="Completed">Dell</Option>
+          <Option value="pending">Pending</Option>
+          <Option value="Completed">Completed</Option>
           {/* <Option value="refunded">Refunded</Option>
           <Option value="cancelled">Cancelled</Option> */}
         </Select>
@@ -70,12 +95,22 @@ export default function ProductScreen() {
         <FormLabel>Category</FormLabel>
         <Select size="sm" placeholder="All">
           <Option value="all">All</Option>
-          <Option value="pending">Printer</Option>
-          <Option value="pending">Desktop</Option>
-          <Option value="Completed">Laptop</Option>
-          <Option value="pending">Accesories</Option>
+          <Option value="pending">Pending</Option>
+          <Option value="Completed">Completed</Option>
         </Select>
       </FormControl>
+      {/* <FormControl size="sm">
+        <FormLabel>Customer</FormLabel>
+        <Select size="sm" placeholder="All">
+          <Option value="all">All</Option>
+          <Option value="olivia">Olivia Rhye</Option>
+          <Option value="steve">Steve Hampton</Option>
+          <Option value="ciaran">Ciaran Murray</Option>
+          <Option value="marina">Marina Macdonald</Option>
+          <Option value="charles">Charles Fulton</Option>
+          <Option value="jay">Jay Hoper</Option>
+        </Select>
+      </FormControl> */}
     </React.Fragment>
   );
   return (
@@ -144,7 +179,7 @@ export default function ProductScreen() {
             Dashboard
           </Link>
           <Typography color="primary" fontWeight={500} fontSize={12}>
-            Products
+            Customers
           </Typography>
         </Breadcrumbs>
       </Box>
@@ -160,20 +195,18 @@ export default function ProductScreen() {
         }}
       >
         <Typography level="h2" component="h1">
-          Products
+          Customers
         </Typography>
-        <Link to="/add">
-          <Button
-            color="primary"
-            // startDecorator={<AddIcon />}
-            size="sm"
-          >
-            Add Product
-          </Button>
-        </Link>
+        <Button
+          color="primary"
+          startDecorator={<DownloadRoundedIcon />}
+          size="sm"
+        >
+          Download PDF
+        </Button>
       </Box>
 
-      {/* search for products */}
+      {/* search for order */}
       <Box
         className="SearchAndFilters-tabletUp"
         sx={{
@@ -188,7 +221,7 @@ export default function ProductScreen() {
         }}
       >
         <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for product</FormLabel>
+          <FormLabel>Search for order</FormLabel>
           <Input
             size="sm"
             placeholder="Search"
@@ -225,56 +258,51 @@ export default function ProductScreen() {
         >
           <thead>
             <tr>
-              <th style={{ width: 140, padding: "12px 6px" }}>Title</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Brand</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>InStock</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Price</th>
-              <th style={{ width: 240, padding: "12px 6px" }}>Product</th>
+              <th style={{ width: 120, padding: "12px 6px" }}>N/A</th>
+              <th style={{ width: 140, padding: "12px 6px" }}>Phone</th>
+              <th style={{ width: 240, padding: "12px 6px" }}>FirstName</th>
+              <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
               <th style={{ width: 140, padding: "12px 6px" }}> </th>
             </tr>
           </thead>
           <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.title}</td>
-                <td>{product.brand}</td>
-                <td>{product.inStock}</td>
-                <td>Ksh. {product.price}</td>
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>
+                  <Typography level="body-xs">
+                    #
+                  </Typography>
+                </td>
+                <td>
+                  <Typography level="body-xs">{user.mobile}</Typography>
+                </td>
+                <td>  <Typography level="body-xs">{user.fname}</Typography></td>
                 <td>
                   <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Typography level="body-xs">
-                      <Avatar
-                        size="40"
-                        color={Avatar.getRandomColor("sitebase", [
-                          "rgb(233, 150, 150)",
-                          "rgb(164, 231, 164)",
-                          "rgb(236, 224, 167)",
-                          "rgb(174, 185, 233)",
-                        ])}
-                        round={true}
-                        src={product.image}
-                        alt={product.title}
-                      />
-                    </Typography>
+                    <Avatar
+                      size="40"
+                      color={Avatar.getRandomColor('sitebase', ['rgb(233, 150, 150)','rgb(164, 231, 164)','rgb(236, 224, 167)','rgb(174, 185, 233)'])}
+                      round={true} 
+                      name={user.sname}
+                      
+                    />
                     <div>
-                      <Typography level="body-xs">{product.title}</Typography>
-                      <Typography level="body-xs">Laptop</Typography>
+                      <Typography level="body-xs">
+                      {user.sname}
+                      </Typography>
+                      <Typography level="body-xs">
+                      {user.email}
+                      </Typography>
                     </div>
                   </Box>
                 </td>
                 <td>
-                  <div>
-                    <ButtonGroup
-                      variant="text"
-                      aria-label="text button group"
-                      style={{ display: "flex" ,alignItems:'center',}}
-                    >
-                        <Link to="/edit">
-                          <EditIcon style={{color:'blue'}} />
-                        </Link>
-                      <DeleteProductModel product={product} />
-                    </ButtonGroup>
-                  </div>
+                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                    <Link level="body-xs" component="button">
+                      Download
+                    </Link>
+                    <RowMenu user={user} />
+                  </Box>
                 </td>
               </tr>
             ))}

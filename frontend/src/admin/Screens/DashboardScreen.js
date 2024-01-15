@@ -1,19 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
-import { Helmet } from "react-helmet-async";
-import SubLayout from "../Layout/SubLayout";
-import { styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
+import * as React from "react";
+import Box from "@mui/joy/Box";
+import Typography from "@mui/joy/Typography";
+import Breadcrumbs from "@mui/joy/Breadcrumbs";
+
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+
+// import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
 import PaidIcon from "@mui/icons-material/Paid";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
-import { Divider } from "@mui/material";
-import EditStockModal from "./EditProductStock";
+import { styled } from "@mui/material/styles";
+import { Link } from "react-router-dom";
+import OutOfStock from "./OutOfStock";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -24,23 +27,13 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 export default function DashboardScreen() {
-  const [products, setProducts] = useState([]);
-  const [productCount, setProductCount] = useState([]);
-  const [orderCount, setOrderCount] = useState([]);
-  const [OutofStockCount, setOutofStockCount] = useState([]);
-  const [totalSales, setTotalSales] = useState([]);
+  
+  const [productCount, setProductCount] = React.useState([]);
+  const [orderCount, setOrderCount] = React.useState([]);
+  const [OutofStockCount, setOutofStockCount] = React.useState([]);
+  const [totalSales, setTotalSales] = React.useState([]);
 
-  useEffect(() => {
-    //get out-of-stock products
-    const fetchProducts = async () => {
-      try {
-        const fetched = await fetch(`http://localhost:8000/stats/out-of-stock`);
-        const jsonData = await fetched.json();
-        setProducts(jsonData);
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
+  React.useEffect(() => {
     //get product count
     const fetchproductCount = async () => {
       try {
@@ -92,163 +85,147 @@ export default function DashboardScreen() {
       }
     };
 
-    fetchProducts();
     fetchproductCount();
     fetchOrderCount();
     fetchOutofStockCount();
     fetchTotalSales();
   }, []);
 
-  // Edit product Stock
-
   return (
-    <div>
-      <SubLayout>
-        <Container>
-          <Helmet>
-            <title>Dashboard</title>
-          </Helmet>
-          <h1 style={{ fontSize: "30px", marginBottom: "20px" }}>
-            My Dashboard
-          </h1>
-          <div style={{ display: "flex", top: "0" }}>
-            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
-              <StyledPaper
-                sx={{
-                  my: 1,
-                  mx: "auto",
-                  p: 2,
-                }}
-              >
-                <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item>
-                    <Avatar style={{ background: "rgb(174, 185, 233)" }}>
-                      <PaidIcon style={{ color: "blue" }} />
-                    </Avatar>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography>Total sales</Typography>
-                    <Typography>Ksh.{totalSales}</Typography>
-                  </Grid>
-                </Grid>
-              </StyledPaper>
-            </Box>
+    <React.Fragment>
+      {/* //header */}
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Breadcrumbs
+          size="sm"
+          aria-label="breadcrumbs"
+          separator={<ChevronRightRoundedIcon fontSize="sm" />}
+          sx={{ pl: 0 }}
+        >
+          <Link
+            underline="none"
+            color="neutral"
+            href="#some-link"
+            aria-label="Home"
+          >
+            <HomeRoundedIcon />
+          </Link>
+          <Link
+            underline="hover"
+            color="neutral"
+            href="#some-link"
+            fontSize={12}
+            fontWeight={500}
+          >
+            Dashboard
+          </Link>
+        </Breadcrumbs>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          mb: 1,
+          gap: 1,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "start", sm: "center" },
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography level="h2" component="h1">
+          Dashboard
+        </Typography>
+      </Box>
 
-            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
-              <StyledPaper
-                sx={{
-                  my: 1,
-                  mx: "auto",
-                  p: 2,
-                }}
-              >
-                <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item>
-                    <Avatar style={{ background: "rgb(236, 224, 167)" }}>
-                      <ShoppingBasketIcon style={{ color: "orange" }} />
-                    </Avatar>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography>Product Sold</Typography>
-                    <Typography>{orderCount}</Typography>
-                  </Grid>
-                </Grid>
-              </StyledPaper>
-            </Box>
+      <div style={{ display: "flex", top: "0" }}>
+        <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+          <StyledPaper
+            sx={{
+              my: 1,
+              mx: "auto",
+              p: 2,
+            }}
+          >
+            <Grid container wrap="nowrap" spacing={2}>
+              <Grid item>
+                <Avatar style={{ background: "rgb(174, 185, 233)" }}>
+                  <PaidIcon style={{ color: "blue" }} />
+                </Avatar>
+              </Grid>
+              <Grid item xs>
+                <Typography>Total sales</Typography>
+                <Typography>Ksh.{totalSales}</Typography>
+              </Grid>
+            </Grid>
+          </StyledPaper>
+        </Box>
 
-            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
-              <StyledPaper
-                sx={{
-                  my: 1,
-                  mx: "auto",
-                  p: 2,
-                }}
-              >
-                <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item>
-                    <Avatar style={{ background: " rgb(164, 231, 164)" }}>
-                      <LocalMallIcon style={{ color: "green" }} />
-                    </Avatar>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography>Total Product</Typography>
-                    <Typography>{productCount}</Typography>
-                  </Grid>
-                </Grid>
-              </StyledPaper>
-            </Box>
+        <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+          <StyledPaper
+            sx={{
+              my: 1,
+              mx: "auto",
+              p: 2,
+            }}
+          >
+            <Grid container wrap="nowrap" spacing={2}>
+              <Grid item>
+                <Avatar style={{ background: "rgb(236, 224, 167)" }}>
+                  <ShoppingBasketIcon style={{ color: "orange" }} />
+                </Avatar>
+              </Grid>
+              <Grid item xs>
+                <Typography>Product Sold</Typography>
+                <Typography>{orderCount}</Typography>
+              </Grid>
+            </Grid>
+          </StyledPaper>
+        </Box>
 
-            <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
-              <StyledPaper
-                sx={{
-                  my: 1,
-                  mx: "auto",
-                  p: 2,
-                }}
-              >
-                <Grid container wrap="nowrap" spacing={2}>
-                  <Grid item>
-                    <Avatar style={{ background: "rgb(233, 150, 150)" }}>
-                      <ProductionQuantityLimitsIcon style={{ color: "red" }} />
-                    </Avatar>
-                  </Grid>
-                  <Grid item xs>
-                    <Typography>Out of stock</Typography>
-                    <Typography>{OutofStockCount}</Typography>
-                  </Grid>
-                </Grid>
-              </StyledPaper>
-            </Box>
-          </div>
-          <Divider style={{ marginBottom: "20px", marginTop: "10px" }} />
-          <div>
-            <h1 style={{ fontSize: "30px", marginBottom: "20px" }}>
-              Products Out of Stock
-            </h1>
-            <div>
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Title</th>
-                    <th scope="col">Brand</th>
-                    <th scope="col">InStock</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                {products.map((product) => (
-                  <tbody key={product.id}>
-                    <tr>
-                      <th scope="row">
-                        <Avatar>
-                          <img
-                            src={product.image}
-                            style={{
-                              width: "100%",
-                              height: "90px",
-                            }}
-                            alt={product.title}
-                          />
-                        </Avatar>
-                      </th>
-                      <td>{product.title}</td>
-                      <td>{product.brand}</td>
-                      <td>{product.inStock}</td>
-                      <td>{product.price}</td>
-                      <td>
-                        <div>
-                        <EditStockModal product={product} />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                ))}
-              </table>
-            </div>
-          </div>
-        </Container>
-      </SubLayout>
-    </div>
+        <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+          <StyledPaper
+            sx={{
+              my: 1,
+              mx: "auto",
+              p: 2,
+            }}
+          >
+            <Grid container wrap="nowrap" spacing={2}>
+              <Grid item>
+                <Avatar style={{ background: " rgb(164, 231, 164)" }}>
+                  <LocalMallIcon style={{ color: "green" }} />
+                </Avatar>
+              </Grid>
+              <Grid item xs>
+                <Typography>Total Product</Typography>
+                <Typography>{productCount}</Typography>
+              </Grid>
+            </Grid>
+          </StyledPaper>
+        </Box>
+
+        <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
+          <StyledPaper
+            sx={{
+              my: 1,
+              mx: "auto",
+              p: 2,
+            }}
+          >
+            <Grid container wrap="nowrap" spacing={2}>
+              <Grid item>
+                <Avatar style={{ background: "rgb(233, 150, 150)" }}>
+                  <ProductionQuantityLimitsIcon style={{ color: "red" }} />
+                </Avatar>
+              </Grid>
+              <Grid item xs>
+                <Typography>Out of stock</Typography>
+                <Typography>{OutofStockCount}</Typography>
+              </Grid>
+            </Grid>
+          </StyledPaper>
+        </Box>
+      </div>
+      <OutOfStock />
+    </React.Fragment>
   );
 }

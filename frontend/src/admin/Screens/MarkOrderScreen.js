@@ -5,6 +5,11 @@ import { Container } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import moment from "moment";
+import { Box, Breadcrumbs, Button, Typography } from "@mui/joy";
+import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
+
 
 export default function MarkOrderScreen() {
   const params = useParams();
@@ -41,8 +46,54 @@ export default function MarkOrderScreen() {
           <title>Order Details</title>
         </Helmet>
 
+        {/* //header */}
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Breadcrumbs
+          size="sm"
+          aria-label="breadcrumbs"
+          separator={<ChevronRightRoundedIcon fontSize="sm" />}
+          sx={{ pl: 0 }}
+        >
+          <Link
+            underline="none"
+            color="neutral"
+            href="#some-link"
+            aria-label="Home"
+          >
+            <HomeRoundedIcon />
+          </Link>
+          <Link
+            underline="hover"
+            color="neutral"
+            href="/orders"
+            fontSize={12}
+            fontWeight={500}
+          >
+            Dashboard
+          </Link>
+          <Typography color="primary" fontWeight={500} fontSize={12}>
+            Order
+          </Typography>
+        </Breadcrumbs>
+      </Box>
+      <Box
+        sx={{
+          display: "flex",
+          mb: 1,
+          gap: 1,
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "start", sm: "center" },
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+        }}
+      >
+        <Typography level="h2" component="h1">
+          Order Details
+        </Typography>
+      </Box>
+
         <div>
-          <Link to="/orders">
+          {/* <Link to=">
             <button
               style={{
                 width: "200px",
@@ -57,7 +108,7 @@ export default function MarkOrderScreen() {
             >
               Back To Order
             </button>
-          </Link>
+          </Link> */}
           {order ? (
             <Card>
               <div className="cardheader">

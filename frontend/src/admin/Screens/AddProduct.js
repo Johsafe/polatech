@@ -50,13 +50,13 @@ export default function AddProduct() {
                     </label>
                     <input type="number" class="form-control" id="stock" />
                   </div>
-                  {/* <div class="mb-2">
+                  <div class="mb-2">
                     <label for="category" class="form-label">
                       Category
                     </label>
                     <input type="text" class="form-control" id="category" />
-                  </div> */}
-                  <div lass="mb-2">
+                  </div>
+                  {/* <div lass="mb-2">
                   <label for="category" class="form-label">
                       Category
                     </label>
@@ -70,7 +70,7 @@ export default function AddProduct() {
                     <option value="2">Two</option>
                     <option value="3">Three</option>
                   </select>
-                  </div>
+                  </div> */}
                   <div class="mb-2">
                     <label for="description" class="form-label">
                       Description
