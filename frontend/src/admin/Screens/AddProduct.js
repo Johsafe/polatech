@@ -108,6 +108,15 @@ export default function AddProduct() {
         <Typography level="h2" component="h1">
           Add Product
         </Typography>
+        <Link to="/product">
+          <Button
+            color="primary"
+            // startDecorator={<AddIcon />}
+            size="sm"
+          >
+            Back to Product
+          </Button>
+        </Link>
       </Box>
 
       {/* form */}

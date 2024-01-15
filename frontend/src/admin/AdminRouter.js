@@ -30,7 +30,7 @@ function AdminRouter() {
             <Route path="/transaction" element={<TransactionScreen />} />
             <Route path="/users" element={<UsersScreen />} />
             <Route path="/add" element={<AddProduct />} />
-            <Route path="/edit" element={<EditProductScreen />} />
+            <Route path="/:id/edit" element={<EditProductScreen />} />
             <Route path="/:id/orders/mark" element={<MarkOrderScreen />} />
             <Route path="/table" element={<OrderTable />} />
             

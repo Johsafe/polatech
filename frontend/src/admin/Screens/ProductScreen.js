@@ -269,7 +269,7 @@ export default function ProductScreen() {
                       aria-label="text button group"
                       style={{ display: "flex" ,alignItems:'center',}}
                     >
-                        <Link to="/edit">
+                        <Link to={`/${product.id}/edit`}>
                           <EditIcon style={{color:'blue'}} />
                         </Link>
                       <DeleteProductModel product={product} />
