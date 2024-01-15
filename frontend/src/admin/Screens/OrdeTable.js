@@ -1,158 +1,46 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import * as React from "react";
-// import Avatar from "@mui/joy/Avatar";
+import AspectRatio from "@mui/joy/AspectRatio";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
-import Chip from "@mui/joy/Chip";
 import Divider from "@mui/joy/Divider";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
-// import Link from "@mui/joy/Link";
+import FormHelperText from "@mui/joy/FormHelperText";
 import Input from "@mui/joy/Input";
-import Modal from "@mui/joy/Modal";
-import ModalDialog from "@mui/joy/ModalDialog";
-import ModalClose from "@mui/joy/ModalClose";
+import IconButton from "@mui/joy/IconButton";
+import Textarea from "@mui/joy/Textarea";
+import Stack from "@mui/joy/Stack";
 import Select from "@mui/joy/Select";
 import Option from "@mui/joy/Option";
-import Table from "@mui/joy/Table";
-import Sheet from "@mui/joy/Sheet";
-import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
-import Menu from "@mui/joy/Menu";
-import MenuButton from "@mui/joy/MenuButton";
-import MenuItem from "@mui/joy/MenuItem";
-import Dropdown from "@mui/joy/Dropdown";
+import Tabs from "@mui/joy/Tabs";
+import TabList from "@mui/joy/TabList";
+import Tab, { tabClasses } from "@mui/joy/Tab";
 import Breadcrumbs from "@mui/joy/Breadcrumbs";
+import Link from "@mui/joy/Link";
+import Card from "@mui/joy/Card";
+import CardActions from "@mui/joy/CardActions";
+import CardOverflow from "@mui/joy/CardOverflow";
 
-import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import SearchIcon from "@mui/icons-material/Search";
-import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
-import AutorenewRoundedIcon from "@mui/icons-material/AutorenewRounded";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import MoreHorizRoundedIcon from "@mui/icons-material/MoreHorizRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-import Avatar from "react-avatar";
-import { Link } from "react-router-dom";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import AccessTimeFilledRoundedIcon from "@mui/icons-material/AccessTimeFilledRounded";
+import VideocamRoundedIcon from "@mui/icons-material/VideocamRounded";
+import InsertDriveFileRoundedIcon from "@mui/icons-material/InsertDriveFileRounded";
+import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
-function RowMenu() {
-  return (
-    <Dropdown>
-      <MenuButton
-        slots={{ root: IconButton }}
-        slotProps={{ root: { variant: "plain", color: "neutral", size: "sm" } }}
-      >
-        <MoreHorizRoundedIcon />
-      </MenuButton>
-      <Menu size="sm" sx={{ minWidth: 140 }}>
-        <MenuItem>Edit</MenuItem>
-        <MenuItem>View</MenuItem>
-        <Divider />
-        <MenuItem color="danger">Delete</MenuItem>
-      </Menu>
-    </Dropdown>
-  );
-}
+import { CardProps } from "@mui/joy/Card";
+import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
+
+// import DropZone from './DropZone';
+// import FileUpload from './FileUpload';
+// import CountrySelector from './CountrySelector';
+// import EditorToolbar from './EditorToolbar';
 
 export default function OrderTable() {
-  const [open, setOpen] = React.useState(false);
-
-  const [users, setUsers] = React.useState([]);
-
-  React.useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const fetched = await fetch(`http://localhost:8000/authenicate/users`);
-        const jsonData = await fetched.json();
-        setUsers(jsonData);
-      } catch (err) {
-        console.error(err.message);
-      }
-    };
-
-    fetchUsers();
-  }, []);
-
-  // filter
-  const renderFilters = () => (
-    <React.Fragment>
-      <FormControl size="sm">
-        <FormLabel>Status</FormLabel>
-        <Select
-          size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-        >
-          <Option value="pending">Pending</Option>
-          <Option value="Completed">Completed</Option>
-          {/* <Option value="refunded">Refunded</Option>
-          <Option value="cancelled">Cancelled</Option> */}
-        </Select>
-      </FormControl>
-      <FormControl size="sm">
-        <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="pending">Pending</Option>
-          <Option value="Completed">Completed</Option>
-        </Select>
-      </FormControl>
-      {/* <FormControl size="sm">
-        <FormLabel>Customer</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="olivia">Olivia Rhye</Option>
-          <Option value="steve">Steve Hampton</Option>
-          <Option value="ciaran">Ciaran Murray</Option>
-          <Option value="marina">Marina Macdonald</Option>
-          <Option value="charles">Charles Fulton</Option>
-          <Option value="jay">Jay Hoper</Option>
-        </Select>
-      </FormControl> */}
-    </React.Fragment>
-  );
   return (
-    <React.Fragment>
-      <Sheet
-        className="SearchAndFilters-mobile"
-        sx={{
-          display: { xs: "flex", sm: "none" },
-          my: 1,
-          gap: 1,
-        }}
-      >
-        <Input
-          size="sm"
-          placeholder="Search"
-          startDecorator={<SearchIcon />}
-          sx={{ flexGrow: 1 }}
-        />
-        <IconButton
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          onClick={() => setOpen(true)}
-        >
-          <FilterAltIcon />
-        </IconButton>
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <ModalDialog aria-labelledby="filter-modal" layout="fullscreen">
-            <ModalClose />
-            <Typography id="filter-modal" level="h2">
-              Filters
-            </Typography>
-            <Divider sx={{ my: 2 }} />
-            <Sheet sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {renderFilters()}
-              <Button color="primary" onClick={() => setOpen(false)}>
-                Submit
-              </Button>
-            </Sheet>
-          </ModalDialog>
-        </Modal>
-      </Sheet>
+    <Box sx={{ flex: 1, width: "100%" }}>
       {/* //header */}
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Breadcrumbs
@@ -179,7 +67,7 @@ export default function OrderTable() {
             Dashboard
           </Link>
           <Typography color="primary" fontWeight={500} fontSize={12}>
-            Customers
+            Products
           </Typography>
         </Breadcrumbs>
       </Box>
@@ -195,163 +83,127 @@ export default function OrderTable() {
         }}
       >
         <Typography level="h2" component="h1">
-          Customers
+          Add Product
         </Typography>
-        <Button
-          color="primary"
-          startDecorator={<DownloadRoundedIcon />}
-          size="sm"
-        >
-          Download PDF
-        </Button>
       </Box>
 
-      {/* search for order */}
-      <Box
-        className="SearchAndFilters-tabletUp"
+      {/* form */}
+      <Stack
+        spacing={4}
         sx={{
-          borderRadius: "sm",
-          py: 2,
-          display: { xs: "none", sm: "flex" },
-          flexWrap: "wrap",
-          gap: 1.5,
-          "& > *": {
-            minWidth: { xs: "120px", md: "160px" },
-          },
+          display: "flex",
+          maxWidth: "900px",
+          mx: "auto",
+          px: { xs: 2, md: 6 },
+          py: { xs: 2, md: 3 },
         }}
       >
-        <FormControl sx={{ flex: 1 }} size="sm">
-          <FormLabel>Search for order</FormLabel>
-          <Input
-            size="sm"
-            placeholder="Search"
-            startDecorator={<SearchIcon />}
-          />
-        </FormControl>
-        {renderFilters()}
-      </Box>
-      <Sheet
-        className="OrderTableContainer"
-        variant="outlined"
-        sx={{
-          display: { xs: "none", sm: "initial" },
-          width: "100%",
-          borderRadius: "sm",
-          flexShrink: 1,
-          overflow: "auto",
-          minHeight: 0,
-        }}
-      >
-        <Table
-          aria-labelledby="tableTitle"
-          stickyHeader
-          hoverRow
-          sx={{
-            "--TableCell-headBackground":
-              "var(--joy-palette-background-level1)",
-            "--Table-headerUnderlineThickness": "1px",
-            "--TableRow-hoverBackground":
-              "var(--joy-palette-background-level1)",
-            "--TableCell-paddingY": "4px",
-            "--TableCell-paddingX": "8px",
-          }}
-        >
-          <thead>
-            <tr>
-              <th style={{ width: 120, padding: "12px 6px" }}>N/A</th>
-              <th style={{ width: 140, padding: "12px 6px" }}>Phone</th>
-              <th style={{ width: 240, padding: "12px 6px" }}>FirstName</th>
-              <th style={{ width: 240, padding: "12px 6px" }}>Customer</th>
-              <th style={{ width: 140, padding: "12px 6px" }}> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>
-                  <Typography level="body-xs">
-                    #
-                  </Typography>
-                </td>
-                <td>
-                  <Typography level="body-xs">{user.mobile}</Typography>
-                </td>
-                <td>  <Typography level="body-xs">{user.fname}</Typography></td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Avatar
-                      size="40"
-                      color={Avatar.getRandomColor('sitebase', ['rgb(233, 150, 150)','rgb(164, 231, 164)','rgb(236, 224, 167)','rgb(174, 185, 233)'])}
-                      round={true} 
-                      name={user.sname}
-                      
-                    />
-                    <div>
-                      <Typography level="body-xs">
-                      {user.sname}
-                      </Typography>
-                      <Typography level="body-xs">
-                      {user.email}
-                      </Typography>
-                    </div>
-                  </Box>
-                </td>
-                <td>
-                  <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Link level="body-xs" component="button">
-                      Download
-                    </Link>
-                    <RowMenu user={user} />
-                  </Box>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Sheet>
-      <Box
-        className="Pagination-laptopUp"
-        sx={{
-          pt: 2,
-          gap: 1,
-          [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
-          display: {
-            xs: "none",
-            md: "flex",
-          },
-        }}
-      >
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          startDecorator={<KeyboardArrowLeftIcon />}
-        >
-          Previous
-        </Button>
-
-        <Box sx={{ flex: 1 }} />
-        {["1", "2", "3", "…", "8", "9", "10"].map((page) => (
-          <IconButton
-            key={page}
-            size="sm"
-            variant={Number(page) ? "outlined" : "plain"}
-            color="neutral"
+        <Card>
+          <Stack
+            direction="row"
+            spacing={3}
+            sx={{ display: { xs: "none", md: "flex" }, my: 1 }}
           >
-            {page}
-          </IconButton>
-        ))}
-        <Box sx={{ flex: 1 }} />
-
-        <Button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          endDecorator={<KeyboardArrowRightIcon />}
-        >
-          Next
-        </Button>
-      </Box>
-    </React.Fragment>
+            <Stack spacing={2} sx={{ flexGrow: 1 }}>
+              <Stack direction="row" spacing={2}>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Product Name</FormLabel>
+                  <Input
+                    size="sm"
+                    placeholder="Product Name"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Product Brand</FormLabel>
+                  <Input
+                    size="sm"
+                    type="text"
+                    placeholder="Product Brand"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                <FormControl>
+                  <FormLabel>Product Price</FormLabel>
+                  <Input size="sm" placeholder="Ksh. 0.00" />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Product Stock</FormLabel>
+                  <Input size="sm" placeholder="No. of product available" />
+                </FormControl>
+                <FormControl sx={{ flexGrow: 1 }}>
+                  <FormLabel>Product Category</FormLabel>
+                  <Input
+                    size="sm"
+                    type="text"
+                    placeholder="Laptop"
+                    sx={{ flexGrow: 1 }}
+                  />
+                </FormControl>
+              </Stack>
+              <Stack spacing={2} sx={{ my: 1 }}>
+                <FormLabel> Product Description</FormLabel>
+                <Textarea
+                  size="sm"
+                  minRows={4}
+                  sx={{ mt: 1.5 }}
+                  placeholder="Write a description about the product."
+                />
+              </Stack>
+              <Stack spacing={2} sx={{ my: 1 }}>
+                <FormLabel> Product Image</FormLabel>
+                <Card
+                  variant="soft"
+                  sx={[
+                    {
+                      borderRadius: "sm",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 1,
+                      alignItems: "center",
+                      px: 3,
+                      flexGrow: 1,
+                      boxShadow: "none",
+                    },
+                  ]}
+                >
+                  <AspectRatio
+                    ratio="1"
+                    variant="solid"
+                    color="primary"
+                    sx={{
+                      minWidth: 32,
+                      borderRadius: "50%",
+                      "--Icon-fontSize": "16px",
+                    }}
+                  >
+                    <div>{<FileUploadRoundedIcon />}</div>
+                  </AspectRatio>
+                  <Typography level="body-sm" textAlign="center">
+                    <Link component="button" overlay>
+                      Click to upload
+                    </Link>{" "}
+                    or drag and drop
+                    <br /> SVG, PNG, JPG or GIF (max. 800x400px)
+                  </Typography>
+                </Card>
+              </Stack>
+            </Stack>
+          </Stack>
+          <CardOverflow sx={{ borderTop: "1px solid", borderColor: "divider" }}>
+            <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
+              <Button size="sm" variant="outlined" color="neutral">
+                Cancel
+              </Button>
+              <Button size="sm" variant="solid">
+                Save
+              </Button>
+            </CardActions>
+          </CardOverflow>
+        </Card>
+      </Stack>
+    </Box>
   );
 }
