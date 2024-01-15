@@ -1,15 +1,13 @@
 import { LocalShipping, Person, Place, Print } from "@mui/icons-material";
-import { Avatar, Card } from "@mui/material";
+import { Card, Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
 import { Link, useParams } from "react-router-dom";
 import moment from "moment";
-import { Box, Breadcrumbs, Button, Typography } from "@mui/joy";
+import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
-import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
-
+import Avatar from "react-avatar";
 
 export default function MarkOrderScreen() {
   const params = useParams();
@@ -40,77 +38,59 @@ export default function MarkOrderScreen() {
   };
   return (
     <div>
-      {/* <SubLayout> */}
+      <Helmet>
+        <title>Order Details</title>
+      </Helmet>
       <Container>
-        <Helmet>
-          <title>Order Details</title>
-        </Helmet>
-
         {/* //header */}
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Breadcrumbs
-          size="sm"
-          aria-label="breadcrumbs"
-          separator={<ChevronRightRoundedIcon fontSize="sm" />}
-          sx={{ pl: 0 }}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Breadcrumbs
+            size="sm"
+            aria-label="breadcrumbs"
+            separator={<ChevronRightRoundedIcon fontSize="sm" />}
+            sx={{ pl: 0 }}
+          >
+            <Link
+              underline="none"
+              color="neutral"
+              href="#some-link"
+              aria-label="Home"
+            >
+              <HomeRoundedIcon />
+            </Link>
+            <Link
+              underline="hover"
+              color="neutral"
+              href="/orders"
+              fontSize={12}
+              fontWeight={500}
+            >
+              Dashboard
+            </Link>
+            <Typography color="primary" fontWeight={500} fontSize={12}>
+              Order
+            </Typography>
+          </Breadcrumbs>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            mb: 1,
+            gap: 1,
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "start", sm: "center" },
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
         >
-          <Link
-            underline="none"
-            color="neutral"
-            href="#some-link"
-            aria-label="Home"
-          >
-            <HomeRoundedIcon />
-          </Link>
-          <Link
-            underline="hover"
-            color="neutral"
-            href="/orders"
-            fontSize={12}
-            fontWeight={500}
-          >
-            Dashboard
-          </Link>
-          <Typography color="primary" fontWeight={500} fontSize={12}>
-            Order
+          <Typography level="h2" component="h1">
+            Order Details
           </Typography>
-        </Breadcrumbs>
-      </Box>
-      <Box
-        sx={{
-          display: "flex",
-          mb: 1,
-          gap: 1,
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { xs: "start", sm: "center" },
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-        }}
-      >
-        <Typography level="h2" component="h1">
-          Order Details
-        </Typography>
-      </Box>
+        </Box>
 
         <div>
-          {/* <Link to=">
-            <button
-              style={{
-                width: "200px",
-                border: "none",
-                borderRadius: "10px",
-                color: "white",
-                cursor: "pointer",
-                background: "black",
-                padding: "7px",
-                marginBottom: "1rem",
-              }}
-            >
-              Back To Order
-            </button>
-          </Link> */}
           {order ? (
-            <Card>
+            <Card sx={{ width: "120%" }}>
               <div className="cardheader">
                 <div>
                   <p className="date">
@@ -204,8 +184,8 @@ export default function MarkOrderScreen() {
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th scope="col">#</th>
                           <th scope="col">Title</th>
+                          <th scope="col">Product</th>
                           <th scope="col">Quantity</th>
                           <th scope="col">Price</th>
                         </tr>
@@ -214,19 +194,42 @@ export default function MarkOrderScreen() {
                         order.OrderItems.map((item) => (
                           <tbody>
                             <tr>
-                              <th scope="row">
-                                <Avatar>
-                                  <img
-                                    src=""
-                                    style={{
-                                      width: "100%",
-                                      height: "90px",
-                                    }}
-                                    alt=""
+                              <td>
+                                {/* {item.title} */}
+                                Product Name
+                              </td>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  gap: 2,
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Typography level="body-xs">
+                                  <Avatar
+                                    size="40"
+                                    color={Avatar.getRandomColor("sitebase", [
+                                      "rgb(233, 150, 150)",
+                                      "rgb(164, 231, 164)",
+                                      "rgb(236, 224, 167)",
+                                      "rgb(174, 185, 233)",
+                                    ])}
+                                    round={true}
+                                    name="Product Name"
+                                    src={item.image}
+                                    alt={item.title}
                                   />
-                                </Avatar>
-                              </th>
-                              <td>Mango</td>
+                                </Typography>
+                                <div>
+                                  <Typography level="body-xs">
+                                    {/* {item.title} */}
+                                    Product Name
+                                  </Typography>
+                                  <Typography level="body-xs">
+                                    Laptop
+                                  </Typography>
+                                </div>
+                              </Box>
                               <td>{item.quantity}</td>
                               <td>Ksh.{item.price}</td>
                             </tr>
@@ -271,8 +274,7 @@ export default function MarkOrderScreen() {
                           borderRadius: "10px",
                           color: "white",
                           cursor: "pointer",
-                          background: "green",
-                          // padding: '7px',
+                          background: "rgb(164, 231, 164)",
                           marginBottom: "1rem",
                         }}
                       >
@@ -288,7 +290,6 @@ export default function MarkOrderScreen() {
           )}
         </div>
       </Container>
-      {/* </SubLayout> */}
     </div>
   );
 }

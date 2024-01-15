@@ -10,7 +10,7 @@ import { Button } from "@mui/material";
 import { toast } from "react-toastify";
 
 export default function DeleteProductModel({ product }) {
-  const Token = JSON.parse(localStorage.getItem("token"));
+  // const Token = JSON.parse(localStorage.getItem("token"));
   const [open, setOpen] = React.useState(false);
   //delete product
   async function deleteCourse(id) {

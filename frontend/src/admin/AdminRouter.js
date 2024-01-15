@@ -13,30 +13,26 @@ import SideBar from "./Layout/sideBar";
 import AddProduct from "./Screens/AddProduct";
 import EditProductScreen from "./Screens/EditProductScreen";
 import MarkOrderScreen from "./Screens/MarkOrderScreen";
-import OrderTable from "./Screens/OrdeTable";
+import OutOfStock from "./Screens/OutOfStock";
 
 function AdminRouter() {
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <ToastContainer position="top-right" limit={1} />
+      <SideBar />
       <Router>
-        <SideBar>
-          <Routes>
-            <Route path="/side" element={<SideBar />} />
-            <Route path="/" element={<DashboardScreen />} />
-            <Route path="/dashboard" element={<DashboardScreen />} />
-            <Route path="/product" element={<ProductScreen />} />
-            <Route path="/orders" element={<OrdersScreen />} />
-            <Route path="/transaction" element={<TransactionScreen />} />
-            <Route path="/users" element={<UsersScreen />} />
-            <Route path="/add" element={<AddProduct />} />
-            <Route path="/:id/edit" element={<EditProductScreen />} />
-            <Route path="/:id/orders/mark" element={<MarkOrderScreen />} />
-            <Route path="/table" element={<OrderTable />} />
-            
-            
-          </Routes>
-        </SideBar>
+        <Routes>
+          <Route path="/" element={<DashboardScreen />} />
+          <Route path="/dashboard" element={<DashboardScreen />} />
+          <Route path="/product" element={<ProductScreen />} />
+          <Route path="/orders" element={<OrdersScreen />} />
+          <Route path="/transaction" element={<TransactionScreen />} />
+          <Route path="/users" element={<UsersScreen />} />
+          <Route path="/add" element={<AddProduct />} />
+          <Route path="/:id/edit" element={<EditProductScreen />} />
+          <Route path="/:id/orders/mark" element={<MarkOrderScreen />} />
+          <Route path="/out-of-stock" element={<OutOfStock />} />
+        </Routes>
       </Router>
     </div>
   );

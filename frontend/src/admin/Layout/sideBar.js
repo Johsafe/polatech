@@ -1,96 +1,212 @@
-// import { Dehaze, Home, ShoppingBasket } from '@material-ui/icons'
-import HomeIcon from "@mui/icons-material/Home";
-import MenuOpenIcon from "@mui/icons-material/MenuOpen";
-import PeopleIcon from "@mui/icons-material/People";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import * as React from "react";
+import GlobalStyles from "@mui/joy/GlobalStyles";
+import Avatar from "@mui/joy/Avatar";
+import Box from "@mui/joy/Box";
+import Chip from "@mui/joy/Chip";
+import Divider from "@mui/joy/Divider";
+import IconButton from "@mui/joy/IconButton";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import ListItemButton, { listItemButtonClasses } from "@mui/joy/ListItemButton";
+import ListItemContent from "@mui/joy/ListItemContent";
+import Typography from "@mui/joy/Typography";
+import Sheet from "@mui/joy/Sheet";
 import PaidIcon from "@mui/icons-material/Paid";
-import LocalMallIcon from "@mui/icons-material/LocalMall";
-import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
-import "./SideBar.css";
-import { NavLink } from "react-router-dom";
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import QuestionAnswerRoundedIcon from "@mui/icons-material/QuestionAnswerRounded";
+import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
+import SupportRoundedIcon from "@mui/icons-material/SupportRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import { Avatar, Box, Divider, IconButton, Typography } from "@mui/joy";
+import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
+import { Helmet } from "react-helmet-async";
 
-export default function SideBar({ children }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(!isOpen);
-  const menuItem = [
-    {
-      path: "/dashboard",
-      name: "Dashboard",
-      icon: <HomeIcon />,
-    },
-    {
-      path: "/product",
-      name: "Products",
-      icon: <LocalMallIcon />,
-    },
-    {
-      path: "/orders",
-      name: "Orders",
-      icon: <ShoppingBasketIcon />,
-    },
-    {
-      path: "/transaction",
-      name: "Transaction",
-      icon: <PaidIcon />,
-    },
-    {
-      path: "/users",
-      name: "Users",
-      icon: <PeopleIcon />,
-    },
-  ];
+export default function SideBar() {
+  function closeSidebar() {
+    if (typeof window !== "undefined") {
+      document.documentElement.style.removeProperty("--SideNavigation-slideIn");
+      document.body.style.removeProperty("overflow");
+    }
+  }
   return (
     <div>
       <Helmet>
         <title>Admin Dashboard</title>
       </Helmet>
-      <div className="box">
-        <div style={{ width: isOpen ? "60px" : "250px" }} className="sidebar">
-          <div className="top_section">
-            <h1 style={{ display: isOpen ? "none" : "block" }} className="logo">
-              Logo
-            </h1>
-            <div style={{ marginLeft: isOpen ? "0" : "50px" }} className="bars">
-              <MenuOpenIcon onClick={toggle} style={{ fontSize: "2rem" }} />
-            </div>
-          </div>
-          {menuItem.map((item, index) => (
-              <NavLink
-                to={item.path}
-                key={index}
-                className="link"
-                activeclassName="active"
+      <Sheet
+        className="Sidebar"
+        sx={{
+          position: { xs: "fixed", md: "sticky" },
+          transform: {
+            xs: "translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1)))",
+            md: "none",
+          },
+          transition: "transform 0.4s, width 0.4s",
+          zIndex: 10000,
+          height: "100dvh",
+          width: "var(--Sidebar-width)",
+          top: 0,
+          p: 2,
+          flexShrink: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          borderRight: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <GlobalStyles
+          styles={(theme) => ({
+            ":root": {
+              "--Sidebar-width": "220px",
+              [theme.breakpoints.up("lg")]: {
+                "--Sidebar-width": "240px",
+              },
+            },
+          })}
+        />
+        <Box
+          className="Sidebar-overlay"
+          sx={{
+            position: "fixed",
+            zIndex: 9998,
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            opacity: "var(--SideNavigation-slideIn)",
+            backgroundColor: "var(--joy-palette-background-backdrop)",
+            transition: "opacity 0.4s",
+            transform: {
+              xs: "translateX(calc(100% * (var(--SideNavigation-slideIn, 0) - 1) + var(--SideNavigation-slideIn, 0) * var(--Sidebar-width, 0px)))",
+              lg: "translateX(-100%)",
+            },
+          }}
+          onClick={() => closeSidebar()}
+        />
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <IconButton variant="soft" color="primary" size="sm">
+            <BrightnessAutoRoundedIcon />
+          </IconButton>
+          <Typography level="title-lg">Asgard Co.</Typography>
+        </Box>
+        <Box
+          sx={{
+            minHeight: 0,
+            overflow: "hidden auto",
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            [`& .${listItemButtonClasses.root}`]: {
+              gap: 1.5,
+            },
+          }}
+        >
+          <List
+            size="sm"
+            sx={{
+              gap: 1,
+              "--List-nestedInsetStart": "30px",
+              "--ListItem-radius": (theme) => theme.vars.radius.sm,
+            }}
+          >
+            <ListItem>
+              <ListItemButton
+                selected
+                role="menuitem"
+                component="a"
+                href="/dashboard"
               >
-                <div className="icon">{item.icon}</div>
-                <div
-                  style={{ display: isOpen ? "none" : "block" }}
-                  className="link_text"
-                >
-                  {item.name}
-                </div>
-              </NavLink>
-          ))}
-          {/* <Divider />
-              <Box sx={{ display: "flex", gap: 1, alignItems: "center",bottom:0,marginBottom:0 }}>
-                <Avatar
-                  variant="outlined"
-                  size="sm"
-                  src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=286"
-                />
-                <Box sx={{ minWidth: 0, flex: 1 }}>
-                  <Typography level="title-sm">Mwamuye Joseph</Typography>
-                  <Typography level="body-xs">admin@gmail.com</Typography>
-                </Box>
-                <IconButton size="sm" variant="plain" color="neutral">
-                  <LogoutRoundedIcon />
-                </IconButton>
-              </Box> */}
-        </div>
-        <main>{children}</main>
-      </div>
+                <DashboardRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Dashboard</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/product">
+                <LocalMallIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Products</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="/orders">
+                <ShoppingCartRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Orders</Typography>
+                </ListItemContent>
+              </ListItemButton>
+            </ListItem>
+            <ListItemButton role="menuitem" component="a" href="/transaction">
+              <PaidIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Transaction</Typography>
+              </ListItemContent>
+            </ListItemButton>
+            <ListItem>
+              <ListItemButton role="menuitem" component="a" href="#">
+                <QuestionAnswerRoundedIcon />
+                <ListItemContent>
+                  <Typography level="title-sm">Notifications</Typography>
+                </ListItemContent>
+                <Chip size="sm" color="primary" variant="solid">
+                  4
+                </Chip>
+              </ListItemButton>
+            </ListItem>
+            <ListItemButton role="menuitem" component="a" href="/users">
+              <GroupRoundedIcon />
+              <ListItemContent>
+                <Typography level="title-sm">Users</Typography>
+              </ListItemContent>
+            </ListItemButton>
+          </List>
+
+          <List
+            size="sm"
+            sx={{
+              mt: "auto",
+              flexGrow: 0,
+              "--ListItem-radius": (theme) => theme.vars.radius.sm,
+              "--List-gap": "8px",
+              mb: 2,
+            }}
+          >
+            <ListItem>
+              <ListItemButton>
+                <SupportRoundedIcon />
+                Support
+              </ListItemButton>
+            </ListItem>
+            <ListItem>
+              <ListItemButton>
+                <SettingsRoundedIcon />
+                Settings
+              </ListItemButton>
+            </ListItem>
+          </List>
+        </Box>
+        <Divider />
+        <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+          <Avatar
+            variant="outlined"
+            size="sm"
+            src="https://material-kit-react.devias.io/assets/avatars/avatar-miron-vitold.png"
+          />
+          <Box sx={{ minWidth: 0, flex: 1 }}>
+            <Typography level="title-sm">Admin Panel</Typography>
+            <Typography level="body-xs">admin@test.com</Typography>
+          </Box>
+          <IconButton size="sm" variant="plain" color="neutral">
+            <LogoutRoundedIcon />
+          </IconButton>
+        </Box>
+      </Sheet>
     </div>
   );
 }
