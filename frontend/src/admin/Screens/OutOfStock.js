@@ -26,6 +26,9 @@ import Avatar from "react-avatar";
 import EditStockModal from "./EditProductStock";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
+import SideBar from "../Layout/sideBar";
 
 export default function OutOfStock() {
   const [open, setOpen] = React.useState(false);
@@ -35,11 +38,11 @@ export default function OutOfStock() {
     //get out-of-stock products
     const fetchProducts = async () => {
       try {
-        const fetched = await fetch(`http://localhost:8000/stats/out-of-stock`);
+        const fetched = await fetch(`${base_url}stats/out-of-stock`);
         const jsonData = await fetched.json();
         setProducts(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
 
@@ -75,7 +78,8 @@ export default function OutOfStock() {
   );
 
   return (
-    <div>
+    <div style={{ display: "flex" }}>      
+      <SideBar />
       <Container>
         <React.Fragment>
           <Sheet

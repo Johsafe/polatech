@@ -35,6 +35,9 @@ import moment from "moment";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
+import SideBar from "../Layout/sideBar";
 
 function RowMenu({ order }) {
   return (
@@ -65,11 +68,11 @@ export default function OrdersScreen() {
   React.useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const fetched = await fetch(`http://localhost:8000/order/orders`);
+        const fetched = await fetch(`${base_url}order/orders`);
         const jsonData = await fetched.json();
         setOrders(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
     fetchOrder();
@@ -100,7 +103,8 @@ export default function OrdersScreen() {
     </React.Fragment>
   );
   return (
-    <div>
+    <div style={{ display: "flex" }}>      
+      <SideBar />
       <Container>
         <React.Fragment>
           <Sheet

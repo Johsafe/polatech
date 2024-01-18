@@ -8,6 +8,9 @@ import { Box, Breadcrumbs, Typography } from "@mui/joy";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Avatar from "react-avatar";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
+import SideBar from "../Layout/sideBar";
 
 export default function MarkOrderScreen() {
   const params = useParams();
@@ -16,13 +19,12 @@ export default function MarkOrderScreen() {
   async function getOrder() {
     try {
       const response = await fetch(
-        `http://localhost:8000/order/orders/${params.id}`
+        `${base_url}order/orders/${params.id}`
       );
       const getorder = await response.json();
       setOrder(getorder);
     } catch (err) {
-      // toast.error(getError(err));
-      console.error(err.message);
+      toast.error(getError(err));
     }
   }
   useEffect(() => {
@@ -37,7 +39,9 @@ export default function MarkOrderScreen() {
     color: "green",
   };
   return (
-    <div>
+    <div style={{ display: "flex" }}>
+      
+      <SideBar />
       <Helmet>
         <title>Order Details</title>
       </Helmet>
@@ -90,7 +94,7 @@ export default function MarkOrderScreen() {
 
         <div>
           {order ? (
-            <Card sx={{ width: "120%" }}>
+            <Card sx={{ width: "100%" }}>
               <div className="cardheader">
                 <div>
                   <p className="date">

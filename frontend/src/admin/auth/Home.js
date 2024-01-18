@@ -1,15 +1,15 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
-import Layout from '../Layout/Layout';
+// import Layout from '../Layout/Layout';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div>
-      <Layout>
+      {/* <Layout> */}
         <Container>
           <h1>Welcome to the Admin Dashboard</h1>
         </Container>
-      </Layout>
+      {/* </Layout> */}
     </div>
   );
 }

@@ -30,6 +30,9 @@ import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import Avatar from "react-avatar";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/material";
+import { toast } from "react-toastify";
+import { base_url, getError } from "../Utils/Utils";
+import SideBar from "../Layout/sideBar";
 
 function RowMenu() {
   return (
@@ -58,11 +61,11 @@ export default function UsersScreen() {
   React.useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const fetched = await fetch(`http://localhost:8000/authenicate/users`);
+        const fetched = await fetch(`${base_url}authenicate/users`);
         const jsonData = await fetched.json();
         setUsers(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
 
@@ -80,7 +83,8 @@ export default function UsersScreen() {
     </React.Fragment>
   );
   return (
-    <div>
+    <div style={{ display: "flex" }}>
+      <SideBar />
       <Container>
         <React.Fragment>
           <Sheet

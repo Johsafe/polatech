@@ -1,4 +1,4 @@
-import AdminRouter from "./admin/AdminRouter";
+import AdminRouter from "./admin/Utils/AdminRouter";
 
 
 export default function App() {

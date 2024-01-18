@@ -14,6 +14,9 @@ import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
+import SideBar from "../Layout/sideBar";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -33,51 +36,41 @@ export default function DashboardScreen() {
     //get product count
     const fetchproductCount = async () => {
       try {
-        const fetched = await fetch(
-          `http://localhost:8000/stats/total-product-count`
-        );
+        const fetched = await fetch(`${base_url}stats/total-product-count`);
         const jsonData = await fetched.json();
         setProductCount(jsonData);
-        // console.log(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
     //get items sold count
     const fetchOrderCount = async () => {
       try {
-        const fetched = await fetch(`http://localhost:8000/stats/total-sold`);
+        const fetched = await fetch(`${base_url}stats/total-sold`);
         const jsonData = await fetched.json();
         setOrderCount(jsonData);
-        // console.log(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
     //get out of stock count
     const fetchOutofStockCount = async () => {
       try {
-        const fetched = await fetch(
-          `http://localhost:8000/stats/out-of-stock-count`
-        );
+        const fetched = await fetch(`${base_url}stats/out-of-stock-count`);
         const jsonData = await fetched.json();
         setOutofStockCount(jsonData);
-        // console.log(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
     //get total amount after sales
     const fetchTotalSales = async () => {
       try {
-        const fetched = await fetch(
-          `http://localhost:8000/stats/total-amount-sold`
-        );
+        const fetched = await fetch(`${base_url}stats/total-amount-sold`);
         const jsonData = await fetched.json();
         setTotalSales(jsonData);
-        // console.log(jsonData);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
 
@@ -88,7 +81,8 @@ export default function DashboardScreen() {
   }, []);
 
   return (
-    <div>
+    <div style={{ display: "flex" }}>
+      <SideBar />
       <Container>
         <React.Fragment>
           {/* //header */}
@@ -134,7 +128,7 @@ export default function DashboardScreen() {
             </Typography>
           </Box>
 
-          <div style={{ display: "flex", top: "30px", width: "120%" }}>
+          <div style={{ display: "flex", top: "30px", width: "100%" }}>
             <Box sx={{ flexGrow: 1, overflow: "hidden", px: 3 }}>
               <StyledPaper
                 sx={{

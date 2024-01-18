@@ -16,6 +16,9 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import FileUploadRoundedIcon from "@mui/icons-material/FileUploadRounded";
 import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "@mui/material";
+import { base_url, getError } from "../Utils/Utils";
+import { toast } from "react-toastify";
+import SideBar from "../Layout/sideBar";
 
 export default function EditProductScreen() {
   //image
@@ -49,16 +52,16 @@ export default function EditProductScreen() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/product/${params.id}`,
+        `${base_url}product/${params.id}`,
         {
           method: "PUT",
           body: data,
         }
       );
-      // console.log(response);
+      toast.success("product editted successfully");
       navigate("/product");
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      toast.error(getError(err));
     }
   };
 
@@ -67,7 +70,7 @@ export default function EditProductScreen() {
     const fetchProducts = async () => {
       try {
         const fetched = await fetch(
-          `http://localhost:8000/product/${params.id}`,
+          `${base_url}product/${params.id}`,
           {
             method: "GET",
           }
@@ -80,7 +83,7 @@ export default function EditProductScreen() {
         setDescription(detail.description);
         setImage(detail.image);
       } catch (err) {
-        console.error(err.message);
+        toast.error(getError(err));
       }
     };
 
@@ -88,6 +91,8 @@ export default function EditProductScreen() {
   }, []);
 
   return (
+    <div style={{ display: "flex" }}>      
+      <SideBar />
     <Container>
       <Box sx={{ flex: 1, width: "100%" }}>
         {/* //header */}
@@ -318,5 +323,6 @@ export default function EditProductScreen() {
         </Stack>
       </Box>
     </Container>
+    </div>
   );
 }

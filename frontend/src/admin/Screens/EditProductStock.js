@@ -10,6 +10,7 @@ import DialogContent from "@mui/joy/DialogContent";
 import Stack from "@mui/joy/Stack";
 import EditIcon from "@mui/icons-material/Edit";
 import { toast } from "react-toastify";
+import { base_url, getError } from "../Utils/Utils";
 
 export default function EditStockModal({ product }) {
   const [open, setOpen] = React.useState(false);
@@ -21,13 +22,13 @@ export default function EditStockModal({ product }) {
   async function getPrdct() {
     try {
       const response = await fetch(
-        `http://localhost:8000/product/${product.id}`
+        `${base_url}product/${product.id}`
       );
       const getprdct = await response.json();
       setTitle(getprdct.title);
       setNewStock(getprdct.inStock);
     } catch (err) {
-      console.error(err.message);
+      toast.error(getError(err));
     }
   }
   React.useEffect(() => {
@@ -39,7 +40,7 @@ export default function EditStockModal({ product }) {
     try {
       const body = { newStock };
       let updatestock = await fetch(
-        `http://localhost:8000/product/${product.id}`,
+        `${base_url}product/${product.id}`,
         {
           method: "PATCH",
           body: JSON.stringify(body),
@@ -53,8 +54,7 @@ export default function EditStockModal({ product }) {
       window.location = "/product";
       toast.success("product stock update successfully");
     } catch (err) {
-      //   toast.error(getError(err));
-      console.error(err.message);
+      toast.error(getError(err));
     }
   };
 

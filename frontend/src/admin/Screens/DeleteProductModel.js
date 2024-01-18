@@ -7,6 +7,7 @@ import DeleteForever from "@mui/icons-material/DeleteForever";
 import WarningRoundedIcon from "@mui/icons-material/WarningRounded";
 import Typography from "@mui/joy/Typography";
 import { Button } from "@mui/material";
+import { base_url, getError } from "../Utils/Utils";
 import { toast } from "react-toastify";
 
 export default function DeleteProductModel({ product }) {
@@ -15,7 +16,7 @@ export default function DeleteProductModel({ product }) {
   //delete product
   async function deleteCourse(id) {
     try {
-      await fetch(`http://localhost:8000/product/${id}`, {
+      await fetch(`${base_url}product/${id}`, {
         method: "DELETE",
         // headers: {
         //   authorization: `Bearer ${Token.token}`,
@@ -24,8 +25,7 @@ export default function DeleteProductModel({ product }) {
       window.location = "/product";
       toast.success("product deleted successfully");
     } catch (err) {
-      //   toast.error(getError(err));
-      console.error(err.message);
+        toast.error(getError(err));
     }
   }
 
