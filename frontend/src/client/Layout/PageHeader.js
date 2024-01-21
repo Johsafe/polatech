@@ -18,6 +18,7 @@ import LaptopIcon from "@mui/icons-material/Laptop";
 import DesktopMacOutlinedIcon from "@mui/icons-material/DesktopMacOutlined";
 import PrintOutlinedIcon from "@mui/icons-material/PrintOutlined";
 import StorageOutlinedIcon from "@mui/icons-material/StorageOutlined";
+import {Link} from 'react-router-dom';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   "& .MuiBadge-badge": {
@@ -47,13 +48,13 @@ export default function PageHeader() {
           </div>
           <ButtonGroup variant="text" aria-label="text button group">
             <Button sx={{fontSize:"11px",color:'white'}}>
-              <LocationOnOutlinedIcon sx={{fontSize:"17px"}} /> <p>Store Locator</p>
+              <LocationOnOutlinedIcon sx={{fontSize:"17px"}} /> {"  "}<p>Store Locator</p>
             </Button>
             <Button sx={{fontSize:"11px",color:'white'}}>
-              <LocalShippingOutlinedIcon sx={{fontSize:"17px"}}/> Track Your Order
+              <LocalShippingOutlinedIcon sx={{fontSize:"17px"}}/> {"  "}Track Your Order
             </Button>
             <Button sx={{fontSize:"11px",color:'white'}}> 
-              <PermIdentityIcon sx={{fontSize:"17px"}}/> My Account
+              <PermIdentityIcon sx={{fontSize:"17px"}}/> {"  "}My Account
             </Button>
             <Button sx={{fontSize:"11px",color:'white'}}>Refund and Return Policy</Button>
           </ButtonGroup>
@@ -103,7 +104,6 @@ export default function PageHeader() {
               </Box>
             </div>
             <div>
-              {/* <ShoppingBagOutlinedIcon/> <h2>Ksh. 0</h2> */}
               <IconButton aria-label="cart">
                 <StyledBadge
                   badgeContent={4}
@@ -126,24 +126,34 @@ export default function PageHeader() {
               }}
             >
               <ul>
-                <LaptopIcon />
+                <Link to="#" sx={{textDecoration:'none'}}>
+                <LaptopIcon />{"  "}
                 Laptop
+                </Link>
               </ul>
               <ul>
-                <DesktopMacOutlinedIcon />
+              <Link to="#" sx={{textDecoration:'none'}}>
+                <DesktopMacOutlinedIcon />{"  "}
                 Desktop
+                </Link>
               </ul>
               <ul>
-                <PrintOutlinedIcon />
+              <Link to="#" sx={{textDecoration:'none'}}>
+                <PrintOutlinedIcon />{"  "}
                 Printer
+                </Link>
               </ul>
               <ul>
-                <DesktopMacOutlinedIcon />
+              <Link to="#" sx={{textDecoration:'none'}}>
+                <DesktopMacOutlinedIcon />{"  "}
                 Monitor
+                </Link>
               </ul>
               <ul>
-                <StorageOutlinedIcon />
+              <Link to="#" sx={{textDecoration:'none'}}>
+                <StorageOutlinedIcon />{"  "}
                 Computer Accessories
+                </Link>
               </ul>
             </div>
           </Box>
