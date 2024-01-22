@@ -74,9 +74,7 @@ adminRouter.post("/login", async (req, res) => {
       error: "Both email and password are required for login.",
     });
   }
-
-  console.log(email);
-
+  // console.log(email);
   try {
     const user = await Admin.findOne({
       where: {

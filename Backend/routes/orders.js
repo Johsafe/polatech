@@ -4,20 +4,19 @@ const orderRouter = express.Router();
 const { Order, OrderItems, Products, Authenticate } = require("../models");
 const { isAuth } = require("../middleware/auth");
 
-//generate orderId
+//generate order number
 const generateOrderCode = () => {
-  // Declare a characters variable which stores all characters
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let OrderCode = "";
-  for (let i = 0; i < 8; i++) {
-    OrderCode += characters[Math.floor(Math.random() * characters.length)];
-  }
-  // Append the current timestamp to the Order code
-  OrderCode += Date.now().toString();
-  return OrderCode;
-};
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let orderCode = "";
 
+  // Generate seven random alphanumeric characters
+  for (let i = 0; i < 7; i++) {
+    orderCode += characters[Math.floor(Math.random() * characters.length)];
+  }
+  orderCode += Date.now().toString().slice(-7);
+
+  return `ORDER-${orderCode}`;
+};
 //Create order
 orderRouter.post("/order", isAuth, async (req, res) => {
   try {
@@ -30,8 +29,8 @@ orderRouter.post("/order", isAuth, async (req, res) => {
     }
 
     // Create a new order
-    const id = generateOrderCode();
-    const newOrder = await Order.create({ id, userId, shippingAddress });
+    const order_no = generateOrderCode();
+    const newOrder = await Order.create({ order_no, userId, shippingAddress });
 
     // Calculate total amount
     let totalAmount = 0;
@@ -70,10 +69,12 @@ orderRouter.post("/order", isAuth, async (req, res) => {
 
         // Create an order item for the product
         return OrderItems.create({
-          orderId: newOrder.id,
+          order_no: newOrder.order_no,
           pdctId,
           quantity,
           price: product.price,
+          product_name: product.title,
+          product_image: product.image,
         });
       })
     );
@@ -121,6 +122,36 @@ orderRouter.get("/orders/:id", async (req, res) => {
       ],
     });
     //   console.log("Fetched Order:", order);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    res.json(order);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Error fetching order", error: error.message });
+  }
+});
+
+//get order by order number
+orderRouter.get("/orders/:orderNumber", async (req, res) => {
+  try {
+    const orderNumber = req.params.orderNumber;
+    const order = await Order.findOne({
+      where: {
+        orderNumber: {
+          [Op.eq]: orderNumber,
+        },
+      },
+      include: [
+        {
+          model: OrderItems,
+          include: [Products],
+        },
+      ],
+    });
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -189,7 +220,7 @@ orderRouter.get("/user/:userId", async (req, res) => {
 });
 
 // Delete order by ID
-orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
+orderRouter.delete("/order/:orderId", isAuth, async (req, res) => {
   try {
     const order = await Order.findByPk(req.params.orderId);
     if (!order) {
@@ -205,26 +236,32 @@ orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
   }
 });
 
-// Delete order and OrderItems by ID
-orderRouter.delete("/orders/:orderId", isAuth, async (req, res) => {
+//delete order and order items by order number
+
+orderRouter.delete("/orders/items/:orderNumber", isAuth, async (req, res) => {
   try {
-    const order = await Order.findByPk(req.params.orderId, {
+    const order = await Order.findOne({
+      where: {
+        order_no: req.params.orderNumber,
+      },
       include: [OrderItems],
     });
 
     if (!order) {
-      return res.status(404).json({ error: "Order not found" });
+      return res.status(404).json({ error: "Order number not found" });
     }
+
     // Delete the associated order items first
     await OrderItems.destroy({
       where: {
-        orderId: order.id,
+        order_no: order.order_no,
       },
     });
+
     // Then, delete the order itself
     await order.destroy();
 
-    res.json({ message: "Order deleted successfully" });
+    res.json({ message: "Order and products deleted successfully" });
   } catch (error) {
     console.error(error);
     res

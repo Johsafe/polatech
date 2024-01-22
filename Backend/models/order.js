@@ -1,9 +1,8 @@
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define("Order", {
-    id: {
+    order_no: {
       type: DataTypes.STRING,
       allowNull: false,
-      primaryKey: true,
       unique: true,
     },
     userId: {
@@ -36,21 +35,22 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "M-pesa",
     },
     isPaid: {
-        type: DataTypes.BOOLEAN,  
-        defaultValue: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    shippingAddress: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      defaultValue: {
+        fname: "",
+        sname: "",
+        address: "",
+        city: "",
+        postalCode: "",
+        county: "",
+        email: "",
       },
-      shippingAddress: {
-        type: DataTypes.JSON, 
-        allowNull: false,
-        defaultValue: {
-          fullName: "",
-          address: "",
-          city: "",
-          postalCode: "",
-          county: "",
-          email:"",
-        },
-      },
+    },
   });
 
   Order.associate = function (models) {

@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const OrderItems = sequelize.define("OrderItems", {
-    orderId: {
+    order_no: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -14,6 +14,14 @@ module.exports = (sequelize, DataTypes) => {
       validate: {
         min: 1,
       },
+    },
+    product_name:{
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    product_image:{
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     price: {
       type: DataTypes.DECIMAL(10, 2),
