@@ -258,7 +258,7 @@ export default function ProductScreen() {
                               "rgb(236, 224, 167)",
                               "rgb(174, 185, 233)",
                             ])}
-                            round={true}
+                            // round={true}
                             src={product.image}
                             alt={product.title}
                           />
@@ -267,7 +267,7 @@ export default function ProductScreen() {
                           <Typography level="body-xs">
                             {product.title}
                           </Typography>
-                          <Typography level="body-xs">Laptop</Typography>
+                          <Typography level="body-xs">{product.category}</Typography>
                         </div>
                       </Box>
                     </td>

@@ -100,7 +100,7 @@ export default function MarkOrderScreen() {
                   <p className="date">
                     {moment(order.createdAt).format("MMM Do YY")}
                   </p>
-                  <p>Order ID: {order.id}</p>
+                  <p>{order.order_no}</p>
                   <p>Status: {order.orderStatus}</p>
                 </div>
 
@@ -137,9 +137,12 @@ export default function MarkOrderScreen() {
                       <h5>Customer</h5>
                       <p>
                         {order.shippingAddress &&
-                          order.shippingAddress.fullName}
+                          order.shippingAddress.fname}{" "}
+                          {order.shippingAddress &&
+                          order.shippingAddress.sname}
                       </p>
-                      <p>Mwamuye@gmail.com</p>
+                      <p>{order.shippingAddress &&
+                          order.shippingAddress.email}</p>
                     </div>
                   </div>
                   <div className="orderheaderdetails">
@@ -199,8 +202,7 @@ export default function MarkOrderScreen() {
                           <tbody>
                             <tr>
                               <td>
-                                {/* {item.title} */}
-                                Product Name
+                                {item.title}
                               </td>
                               <Box
                                 sx={{
@@ -218,7 +220,6 @@ export default function MarkOrderScreen() {
                                       "rgb(236, 224, 167)",
                                       "rgb(174, 185, 233)",
                                     ])}
-                                    round={true}
                                     name="Product Name"
                                     src={item.image}
                                     alt={item.title}
@@ -226,8 +227,7 @@ export default function MarkOrderScreen() {
                                 </Typography>
                                 <div>
                                   <Typography level="body-xs">
-                                    {/* {item.title} */}
-                                    Product Name
+                                    {item.title}
                                   </Typography>
                                   <Typography level="body-xs">
                                     Laptop

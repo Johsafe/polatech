@@ -103,7 +103,7 @@ export default function OrdersScreen() {
     </React.Fragment>
   );
   return (
-    <div style={{ display: "flex" }}>      
+    <div style={{ display: "flex" }}>
       <SideBar />
       <Container>
         <React.Fragment>
@@ -263,7 +263,7 @@ export default function OrdersScreen() {
                 {orders.map((order) => (
                   <tr key={order.id}>
                     <td>
-                      <Typography level="body-xs">{order.id}</Typography>
+                      <Typography level="body-xs">{order.order_no}</Typography>
                     </td>
                     <td>
                       <Typography level="body-xs">
@@ -305,15 +305,15 @@ export default function OrdersScreen() {
                             "rgb(174, 185, 233)",
                           ])}
                           round={true}
-                          name={order.shippingAddress.fullName}
+                          name={`${order.shippingAddress.fname} ${order.shippingAddress.sname}`}
                         />
                         <div>
                           <Typography level="body-xs">
-                            {order.shippingAddress.fullName}
+                            {order.shippingAddress.fname}{" "}
+                            {order.shippingAddress.sname}
                           </Typography>
                           <Typography level="body-xs">
-                            {/* {order.shippingAddress.email} */}
-                            orderemail@gmail.com
+                            {order.shippingAddress.email}
                           </Typography>
                         </div>
                       </Box>

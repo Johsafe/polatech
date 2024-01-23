@@ -8,13 +8,31 @@ import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import {CardActionArea,} from "@mui/material";
+import { CardActionArea } from "@mui/material";
 import Chip from "@mui/joy/Chip";
 import Link from "@mui/joy/Link";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import PageFooter from "../Layout/pageFooter";
+import { base_url, getError } from "../../admin/Utils/Utils";
+import { toast } from "react-toastify";
 
 export default function ProductPage() {
+  const [products, setProducts] = React.useState([]);
+  //get all products
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetched = await fetch(`${base_url}product`);
+        const jsonData = await fetched.json();
+        setProducts(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
   return (
     <div>
       <PageHeader />
@@ -235,180 +253,58 @@ export default function ProductPage() {
                   gap: "10px",
                   alignItems: "center",
                   marginTop: "20px",
+                  flexWrap:'wrap'
                 }}
               >
-                <Card sx={{ width: 220 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image="https://smartbuy.co.ke/wp-content/uploads/2021/09/asus-x409f-side-3-min.jpg"
-                      alt="https://smartbuy.co.ke/wp-content/uploads/woocommerce-placeholder-300x300.png"
-                    />
-                    <CardContent>
-                      <Typography level="body-xs">Asus Celeron</Typography>
-                      <Link
-                        href="/details"
-                        fontWeight="md"
-                        color="neutral"
-                        textColor="text.primary"
-                        overlay
-                        endDecorator={<ArrowOutwardIcon />}
-                      >
-                        ASUS X543M, Celeron N4020
-                      </Link>
+                {products.map((product) => (
+                  <Card sx={{ width: 205,height:400 }}>
+                    <CardActionArea>
+                      <CardMedia
+                      // sx={{height:'180px',marginTop:'10px'}}
+                        component="img"
+                        height="140"
+                        image={product.image}
+                        alt="https://smartbuy.co.ke/wp-content/uploads/woocommerce-placeholder-300x300.png"
+                      />
+                      {/* <img src={product.image} style={{width:'100%',height:'100%',objectFit:'fit'}}/> */}
+                      <CardContent>
+                        <Typography level="body-xs">
+                          {product.category}
+                        </Typography>
+                        <Link
+                          href="/details"
+                          fontWeight="md"
+                          color="neutral"
+                          textColor="text.primary"
+                          overlay
+                          endDecorator={<ArrowOutwardIcon />}
+                        >
+                          {product.title}
+                        </Link>
 
-                      <Typography
-                        level="title-lg"
-                        sx={{ mt: 1, fontWeight: "xl" }}
-                        endDecorator={
-                          <Chip
-                            component="span"
-                            size="sm"
-                            variant="soft"
-                            color="success"
-                          >
-                            Lowest price
-                          </Chip>
-                        }
-                      >
-                        KSh26,499
-                      </Typography>
-                      <Typography level="body-sm">
-                        (Only <b>7</b> left in stock!)
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-                <Card sx={{ width: 220 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image="https://smartbuy.co.ke/wp-content/uploads/2021/04/LENOVO-IDEAPAD-1-15-FRONT-IMAGE.jpg"
-                      alt="https://smartbuy.co.ke/wp-content/uploads/woocommerce-placeholder-300x300.png"
-                    />
-                    <CardContent>
-                      <Typography level="body-xs">Lenovo Celeron</Typography>
-                      <Link
-                        href="/details"
-                        fontWeight="md"
-                        color="neutral"
-                        textColor="text.primary"
-                        overlay
-                        endDecorator={<ArrowOutwardIcon />}
-                      >
-                        Lenovo Ideapad 1,Celeron N4020,
-                      </Link>
-
-                      <Typography
-                        level="title-lg"
-                        sx={{ mt: 1, fontWeight: "xl" }}
-                        endDecorator={
-                          <Chip
-                            component="span"
-                            size="sm"
-                            variant="soft"
-                            color="success"
-                          >
-                            Lowest price
-                          </Chip>
-                        }
-                      >
-                        KSh33,999
-                      </Typography>
-                      <Typography level="body-sm">
-                        (Only <b>5</b> left in stock!)
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-                <Card sx={{ width: 220 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image="https://smartbuy.co.ke/wp-content/uploads/2021/08/hp-14-notebook-B-600x600.jpg"
-                      alt="https://smartbuy.co.ke/wp-content/uploads/woocommerce-placeholder-300x300.png"
-                    />
-                    <CardContent>
-                      <Typography level="body-xs">Hp Celeron</Typography>
-                      <Link
-                        href="/details"
-                        fontWeight="md"
-                        color="neutral"
-                        textColor="text.primary"
-                        overlay
-                        endDecorator={<ArrowOutwardIcon />}
-                      >
-                        HP 14 Notebook, Celeron
-                      </Link>
-
-                      <Typography
-                        level="title-lg"
-                        sx={{ mt: 1, fontWeight: "xl" }}
-                        endDecorator={
-                          <Chip
-                            component="span"
-                            size="sm"
-                            variant="soft"
-                            color="success"
-                          >
-                            Lowest price
-                          </Chip>
-                        }
-                      >
-                        KSh33,999
-                      </Typography>
-                      <Typography level="body-sm" sx={{ color: "red" }}>
-                        (Out Of Stock)
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-                <Card sx={{ width: 220 }}>
-                  <CardActionArea>
-                    <CardMedia
-                      component="img"
-                      height="140"
-                      image="https://smartbuy.co.ke/wp-content/uploads/2021/08/dell-vostro-3500-i5-11th-gen-300x300.jpg"
-                      alt="https://smartbuy.co.ke/wp-content/uploads/woocommerce-placeholder-300x300.png"
-                    />
-                    <CardContent>
-                      <Typography level="body-xs">Dell Laptops</Typography>
-                      <Link
-                        href="/details"
-                        fontWeight="md"
-                        color="neutral"
-                        textColor="text.primary"
-                        overlay
-                        endDecorator={<ArrowOutwardIcon />}
-                      >
-                        Dell Vostro 3500 i5 11TH Gen,
-                      </Link>
-
-                      <Typography
-                        level="title-lg"
-                        sx={{ mt: 1, fontWeight: "xl" }}
-                        endDecorator={
-                          <Chip
-                            component="span"
-                            size="sm"
-                            variant="soft"
-                            color="success"
-                          >
-                            Lowest price
-                          </Chip>
-                        }
-                      >
-                        KSh63,999
-                      </Typography>
-                      <Typography level="body-sm">
-                        (Only <b>1</b> left in stock!)
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
+                        <Typography
+                          level="title-lg"
+                          sx={{ mt: 1, fontWeight: "xl" }}
+                          endDecorator={
+                            <Chip
+                              component="span"
+                              size="sm"
+                              variant="soft"
+                              color="success"
+                            >
+                               Price
+                            </Chip>
+                          }
+                        >
+                          Ksh.{" "}{product.price}
+                        </Typography>
+                        <Typography level="body-sm">
+                          (Only <b>{product.inStock}</b> left in stock!)
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                ))}
               </div>
             </Box>
           </Box>

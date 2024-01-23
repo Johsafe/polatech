@@ -37,8 +37,16 @@ export default function AddProduct() {
   const [price, setPrice] = React.useState("");
   const [inStock, setInStock] = React.useState("");
   const [description, setDescription] = React.useState("");
-  // const [category, setCategory] = React.useState("");
   const [image, setImage] = React.useState([]);
+
+  const [category, setCategory] = React.useState("");
+  const [color, setColor] = React.useState("");
+  const [screen_size, setScreen_size] = React.useState("");
+  const [condition, setCondition] = React.useState("");
+  const [processor, setProcessor] = React.useState("");
+  const [graphic_card, setGraphic_card] = React.useState("");
+  const [ram_size, setRam_size] = React.useState("");
+  const [storage, setStorage] = React.useState("");
 
   //add product function
   const addProduct = async (e) => {
@@ -49,9 +57,16 @@ export default function AddProduct() {
     data.append("brand", brand);
     data.append("price", price);
     data.append("inStock", inStock);
-    // data.append("category",category)
+    data.append("category", category);
     data.append("description", description);
     data.append("image", image);
+    data.append("color", color);
+    data.append("screen_size", screen_size);
+    data.append("condition", condition);
+    data.append("processor", processor);
+    data.append("graphic_card", graphic_card);
+    data.append("ram_size", ram_size);
+    data.append("storage", storage);
 
     try {
       const response = await fetch(`${base_url}product`, {
@@ -130,7 +145,6 @@ export default function AddProduct() {
             spacing={4}
             sx={{
               display: "flex",
-              maxWidth: "900px",
               mx: "auto",
               px: { xs: 2, md: 6 },
               py: { xs: 2, md: 3 },
@@ -142,6 +156,32 @@ export default function AddProduct() {
                 spacing={3}
                 sx={{ display: { xs: "none", md: "flex" }, my: 1 }}
               >
+                
+                <div>
+                  <Stack direction="column" spacing={1}>
+                    <AspectRatio
+                      ratio="1"
+                      maxHeight={300}
+                      sx={{ flex: 1, minWidth: 250 }}
+                    >
+                      <img
+                        srcSet="https://smartbuy.co.ke/wp-content/uploads/woocommerce-placeholder-300x300.png"
+                        loading="lazy"
+                      />
+                    </AspectRatio>
+                  </Stack>
+                  <div style={{ marginTop: "1rem" }}>
+                    <Button
+                      size="sm"
+                      variant="solid"
+                      onClick={addProduct}
+                      sx={{ width: "100%" }}
+                      type="submit"
+                    >
+                     Add Product
+                    </Button>
+                  </div>
+                </div>
                 <Stack spacing={2} sx={{ flexGrow: 1 }}>
                   <Stack direction="row" spacing={2}>
                     <FormControl sx={{ flexGrow: 1 }}>
@@ -160,31 +200,44 @@ export default function AddProduct() {
                       <Input
                         size="sm"
                         type="text"
-                        placeholder="Product Brand"
+                        placeholder="e.g Laptop"
                         sx={{ flexGrow: 1 }}
                         value={brand}
                         required
                         onChange={(e) => setBrand(e.target.value)}
                       />
                     </FormControl>
-                  </Stack>
-                  <Stack direction="row" spacing={2}>
-                    <FormControl>
-                      <FormLabel>Product Price</FormLabel>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Storage</FormLabel>
                       <Input
                         size="sm"
-                        placeholder="price 0.00"
+                        placeholder="e.g 1TB HDD"
+                        sx={{ flexGrow: 1 }}
+                        value={storage}
+                        required
+                        onChange={(e) => setStorage(e.target.value)}
+                      />
+                    </FormControl>
+                  </Stack>
+                  <Stack direction="row" spacing={2}>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Price</FormLabel>
+                      <Input
+                        sx={{ flexGrow: 1 }}
+                        size="sm"
+                        placeholder="e.g 12000"
                         type="number"
                         value={price}
                         required
                         onChange={(e) => setPrice(e.target.value)}
                       />
                     </FormControl>
-                    <FormControl>
+                    <FormControl sx={{ flexGrow: 1 }}>
                       <FormLabel>Product Stock</FormLabel>
                       <Input
+                        sx={{ flexGrow: 1 }}
                         size="sm"
-                        placeholder="No. of product available"
+                        placeholder="e.g 8"
                         value={inStock}
                         required
                         onChange={(e) => setInStock(e.target.value)}
@@ -194,13 +247,83 @@ export default function AddProduct() {
                       <FormLabel>Product Category</FormLabel>
                       <Input
                         size="sm"
-                        type="text"
                         placeholder="Laptop"
                         sx={{ flexGrow: 1 }}
-                        // value={category}
-                        //       required
-                        //       onChange={(e) => setCategory(e.target.value)}
-                        disabled
+                        value={category}
+                        required
+                        onChange={(e) => setCategory(e.target.value)}
+                      />
+                    </FormControl>
+                  </Stack>
+
+                  <Stack direction="row" spacing={2}>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Color</FormLabel>
+                      <Input
+                        sx={{ flexGrow: 1 }}
+                        size="sm"
+                        placeholder="e.g snow white"
+                        value={color}
+                        required
+                        onChange={(e) => setColor(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Screen Size</FormLabel>
+                      <Input
+                        sx={{ flexGrow: 1 }}
+                        size="sm"
+                        placeholder="e.g 15.6 inch"
+                        value={screen_size}
+                        required
+                        onChange={(e) => setScreen_size(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Condition</FormLabel>
+                      <Input
+                        size="sm"
+                        placeholder="e.g Refurbished"
+                        sx={{ flexGrow: 1 }}
+                        value={condition}
+                        required
+                        onChange={(e) => setCondition(e.target.value)}
+                      />
+                    </FormControl>
+                  </Stack>
+
+                  <Stack direction="row" spacing={2}>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Processor Type</FormLabel>
+                      <Input
+                        sx={{ flexGrow: 1 }}
+                        size="sm"
+                        placeholder="e.g 11TH Gen Intel Core i5"
+                        value={processor}
+                        required
+                        onChange={(e) => setProcessor(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Graphic Card</FormLabel>
+                      <Input
+                        sx={{ flexGrow: 1 }}
+                        size="sm"
+                        placeholder="e.g Intel Iris Xe"
+                        value={graphic_card}
+                        required
+                        onChange={(e) => setGraphic_card(e.target.value)}
+                      />
+                    </FormControl>
+                    <FormControl sx={{ flexGrow: 1 }}>
+                      <FormLabel>Product Ram</FormLabel>
+                      <Input
+                        size="sm"
+                        placeholder="e.g 4GB DDR3"
+                        sx={{ flexGrow: 1 }}
+                        value={ram_size}
+                        required
+                        onChange={(e) => setRam_size(e.target.value)}
                       />
                     </FormControl>
                   </Stack>
@@ -268,7 +391,7 @@ export default function AddProduct() {
                   </Stack>
                 </Stack>
               </Stack>
-              <CardOverflow
+              {/* <CardOverflow
                 sx={{ borderTop: "1px solid", borderColor: "divider" }}
               >
                 <CardActions sx={{ alignSelf: "flex-end", pt: 2 }}>
@@ -279,7 +402,7 @@ export default function AddProduct() {
                     Add
                   </Button>
                 </CardActions>
-              </CardOverflow>
+              </CardOverflow> */}
             </Card>
           </Stack>
         </Box>
