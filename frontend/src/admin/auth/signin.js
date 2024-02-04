@@ -21,7 +21,7 @@ import {useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base_url, getError } from "../Utils/Utils";
 
-export default function Loginin({ setToken }) {
+export default function Loginin() {
   //auth
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -36,7 +36,6 @@ export default function Loginin({ setToken }) {
       });
       localStorage.setItem("Logged", JSON.stringify(data));
       localStorage.setItem('token', data.token);
-      setToken(data.token);
       navigate("/dashboard");
     } catch (err) {
       toast.error(getError(err));

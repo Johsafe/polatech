@@ -15,6 +15,7 @@ import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import PageFooter from "../Layout/pageFooter";
 import { base_url, getError } from "../../admin/Utils/Utils";
 import { toast } from "react-toastify";
+// import { Link } from "react-router-dom";
 
 export default function ProductPage() {
   const [products, setProducts] = React.useState([]);
@@ -32,6 +33,7 @@ export default function ProductPage() {
 
     fetchProducts();
   }, []);
+
 
   return (
     <div>
@@ -253,14 +255,14 @@ export default function ProductPage() {
                   gap: "10px",
                   alignItems: "center",
                   marginTop: "20px",
-                  flexWrap:'wrap'
+                  flexWrap: "wrap",
                 }}
               >
                 {products.map((product) => (
-                  <Card sx={{ width: 205,height:400 }}>
+                  <Card sx={{ width: 205, height: 400 }}>
                     <CardActionArea>
                       <CardMedia
-                      // sx={{height:'180px',marginTop:'10px'}}
+                        // sx={{height:'180px',marginTop:'10px'}}
                         component="img"
                         height="140"
                         image={product.image}
@@ -272,7 +274,7 @@ export default function ProductPage() {
                           {product.category}
                         </Typography>
                         <Link
-                          href="/details"
+                          to={`/details/${product.title}`}
                           fontWeight="md"
                           color="neutral"
                           textColor="text.primary"
@@ -292,15 +294,22 @@ export default function ProductPage() {
                               variant="soft"
                               color="success"
                             >
-                               Price
+                              Price
                             </Chip>
                           }
                         >
-                          Ksh.{" "}{product.price}
+                          Ksh. {product.price}
                         </Typography>
-                        <Typography level="body-sm">
-                          (Only <b>{product.inStock}</b> left in stock!)
-                        </Typography>
+
+                        {product.inStock > 0 ? (
+                          <Typography level="body-sm">
+                            (Only <b>{product.inStock}</b> left in stock!)
+                          </Typography>
+                        ) : (
+                          <Typography level="body-sm" sx={{ color: "red" }}>
+                            Out of Stock
+                          </Typography>
+                        )}
                       </CardContent>
                     </CardActionArea>
                   </Card>

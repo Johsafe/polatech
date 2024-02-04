@@ -5,16 +5,46 @@ import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
 import TabPanel from "@mui/joy/TabPanel";
-import Table from "@mui/joy/Table";
+// import Table from "@mui/joy/Table";
 import PageHeader from "../Layout/PageHeader";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import { Breadcrumbs } from "@mui/joy";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 import Link from "@mui/joy/Link";
 import PageFooter from "../Layout/pageFooter";
+import { base_url, getError } from "../../admin/Utils/Utils";
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function ProductDetails() {
   const [index, setIndex] = React.useState(0);
+
+  // const navigate = useNavigate();
+
+  const params = useParams();
+  const { slug } = params;
+
+  const [product, setProduct] = React.useState([]);
+
+  React.useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetched = await fetch(`${base_url}product/${slug}`);
+        const jsonData = await fetched.json();
+        setProduct(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+
+    fetchProducts();
+  }, [slug]);
+
+  
+  console.log(product)
+
+  //add to cart function
+  const addToCart = async () => {};
   return (
     <div>
       <PageHeader />
@@ -54,21 +84,26 @@ export default function ProductDetails() {
           }}
         >
           <Box>
-            <img
-              src="https://smartbuy.co.ke/wp-content/uploads/2021/08/dell-vostro-3500-i5-11th-gen-300x300.jpg"
-              alt="Dell"
-            />
+            <img src={product.image} alt={product.title} />
           </Box>
           <Box>
             <Typography variant="h5" component="div">
-              Dell Laptops
+              {product.category}
             </Typography>
             <Typography level="h2" component="h2">
-              Dell Vostro 3500 i5 11TH Gen, 4GB Ram, 1TB HDD
+              {product.title}
             </Typography>
-            <Typography variant="h5" component="div">
-              Availability: (Only <b>1</b> left in stock!)
-            </Typography>
+
+            {product.inStock > 0 ? (
+              <Typography variant="h5" component="div">
+                Availability: (Only <b>{product.inStock}</b> left in stock!)
+              </Typography>
+            ) : (
+              <Typography variant="h5" component="div" sx={{ color: "red" }}>
+                Out Of Stock
+              </Typography>
+            )}
+
             <Divider sx={{ marginTop: "10px", marginBottom: "20px" }} />
             <div style={{ marginLeft: "20px" }}>
               <Typography
@@ -76,7 +111,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li> Brand:Dell</li>
+                <li> Brand: {product.brand}</li>
               </Typography>
 
               <Typography
@@ -84,7 +119,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li>Condition:Brand New</li>
+                <li>Condition: {product.condition}</li>
               </Typography>
 
               <Typography
@@ -92,7 +127,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li> Ram: 4 GB</li>
+                <li> Ram: {product.ram_size}</li>
               </Typography>
 
               <Typography
@@ -100,7 +135,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li>Storage: 1 TB HDD</li>
+                <li>Storage: {product.storage}</li>
               </Typography>
 
               <Typography
@@ -108,7 +143,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li> Display Size: 15.6 inch</li>
+                <li> Display Size: {product.screen_size}</li>
               </Typography>
 
               <Typography
@@ -116,7 +151,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li> Graphic Card:Intel Iris Xe</li>
+                <li> Graphic Card: {product.graphic_card}</li>
               </Typography>
 
               <Typography
@@ -124,7 +159,7 @@ export default function ProductDetails() {
                 component="div"
                 sx={{ color: "black", fontWeight: 600 }}
               >
-                <li>processor:11TH Gen Intel Core i5</li>
+                <li>processor: {product.processor}</li>
               </Typography>
 
               <Typography
@@ -135,26 +170,37 @@ export default function ProductDetails() {
                 <li>Operating System: Window 10 pro</li>
               </Typography>
             </div>
-            <div style={{ display: "flex", gap: "200px", alignItems: "center", marginTop: "20px", }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "200px",
+                alignItems: "center",
+                marginTop: "20px",
+              }}
+            >
               <div>
                 <Typography
                   level="h1"
                   component="h1"
                   sx={{ color: "red", fontWeight: 500 }}
                 >
-                  KSh63,999
+                  KSh {product.price}
                 </Typography>
               </div>
-              <div>
-                <Button
-                  size="sm"
-                  variant="soft"
-                  color="neutral"
-                  startDecorator={<AddShoppingCartIcon />}
-                >
-                  Add to Cart
-                </Button>
-              </div>
+
+              {product.inStock > 0 && (
+                <div>
+                  <Button
+                    onClick={addToCart}
+                    size="sm"
+                    variant="soft"
+                    color="neutral"
+                    startDecorator={<AddShoppingCartIcon />}
+                  >
+                    Add to Cart
+                  </Button>
+                </div>
+              )}       
             </div>
 
             <Box
@@ -208,22 +254,9 @@ export default function ProductDetails() {
                     clipPath: "inset(0 -100vmax)",
                   })}
                 >
-                  <TabPanel value={0}>
-                    The dell vostro 3500 i5 laptop is the perfect choice for
-                    shoppers looking to find a high-performance, yet affordable
-                    device. This computer has the power you need for
-                    productivity and everyday use. It is a great laptop for
-                    business users. Reviewers have given the Vostro 3500 good
-                    marks, especially for its very affordable price tag. The
-                    laptop also offers a variety of ports and connection
-                    options, making it perfect for users who need to keep
-                    multiple devices connected at the same time. If you’re
-                    looking for an affordable and reliable laptop for work or
-                    school, the Dell Vostro 3500 should be at the top of your
-                    list.
-                  </TabPanel>
+                  <TabPanel value={0}> {product.description}</TabPanel>
                   <TabPanel value={1}>
-                    <Table
+                    {/* <Table
                       aria-label="basic table"
                       sx={{ width: "600px", alignItems: "center" }}
                     >
@@ -242,7 +275,7 @@ export default function ProductDetails() {
                           <td>Intel</td>
                         </tr>
                       </tbody>
-                    </Table>
+                    </Table> */}
                   </TabPanel>
                 </Box>
               </Tabs>

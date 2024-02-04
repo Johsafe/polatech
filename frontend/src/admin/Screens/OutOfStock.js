@@ -10,7 +10,7 @@ import Breadcrumbs from "@mui/joy/Breadcrumbs";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
 import Typography from "@mui/joy/Typography";
 import Divider from "@mui/joy/Divider";
-import Select from "@mui/joy/Select";
+import Select from "react-select";
 import Option from "@mui/joy/Option";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
@@ -33,6 +33,9 @@ import SideBar from "../Layout/sideBar";
 export default function OutOfStock() {
   const [open, setOpen] = React.useState(false);
   const [products, setProducts] = React.useState([]);
+  const [filteredProducts, setFilteredProducts] = React.useState([]);
+  const [section, setSection] = React.useState([]);
+  const [category, setCategory] = React.useState([]);
 
   React.useEffect(() => {
     //get out-of-stock products
@@ -40,7 +43,16 @@ export default function OutOfStock() {
       try {
         const fetched = await fetch(`${base_url}stats/out-of-stock`);
         const jsonData = await fetched.json();
+        const uniqueBrands = [
+          ...new Set(jsonData.map((product) => product.brand)),
+        ];
+        const uniqueCate = [
+          ...new Set(jsonData.map((product) => product.category)),
+        ];
+        setSection(uniqueBrands);
+        setCategory(uniqueCate);
         setProducts(jsonData);
+        setFilteredProducts(jsonData);
       } catch (err) {
         toast.error(getError(err));
       }
@@ -49,6 +61,37 @@ export default function OutOfStock() {
     fetchProducts();
   }, []);
 
+  // filter by brand
+  function filterBrand(value) {
+    if (value === "All") {
+      setProducts(filteredProducts);
+      return;
+    }
+
+    const brandFilteredProducts = filteredProducts.filter(
+      (product) => product.brand === value
+    );
+    setProducts(brandFilteredProducts);
+  }
+
+  // filter by category
+  function filterCate(value) {
+    if (value === "All") {
+      setProducts(filteredProducts);
+      return;
+    }
+
+    const cateFilteredProducts = filteredProducts.filter(
+      (product) => product.category === value
+    );
+    setProducts(cateFilteredProducts);
+  }
+  const brandOptions = section.map((brand) => ({ value: brand, label: brand }));
+  const categoryOptions = category.map((cate) => ({
+    value: cate,
+    label: cate,
+  }));
+
   // filter
   const renderFilters = () => (
     <React.Fragment>
@@ -56,29 +99,25 @@ export default function OutOfStock() {
         <FormLabel>Brand</FormLabel>
         <Select
           size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-        >
-          <Option value="pending">Hp</Option>
-          <Option value="Completed">Lenovo</Option>
-          <Option value="Completed">Dell</Option>
-        </Select>
+          placeholder="Filter by brand"
+          onChange={(e) => filterBrand(e.value)}
+          options={[{ value: "All", label: "All" }, ...brandOptions]}
+        />
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="pending">Printer</Option>
-          <Option value="pending">Desktop</Option>
-          <Option value="Completed">Laptop</Option>
-          <Option value="pending">Accesories</Option>
-        </Select>
+        <Select
+          size="sm"
+          placeholder="Filter by category"
+          onChange={(e) => filterCate(e.value)}
+          options={[{ value: "All", label: "All" }, ...categoryOptions]}
+        />
       </FormControl>
     </React.Fragment>
   );
 
   return (
-    <div style={{ display: "flex" }}>      
+    <div style={{ display: "flex" }}>
       <SideBar />
       <Container>
         <React.Fragment>

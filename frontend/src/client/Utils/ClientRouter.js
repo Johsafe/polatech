@@ -10,7 +10,7 @@ function ClientRouter() {
       <Router>
         <Routes>
           <Route path="/" element={<ProductPage />} />
-          <Route path="/details" element={<ProductDetails />} />
+          <Route path="/details/:slug" element={<ProductDetails />} />
           <Route path="/cart" element={<ProductCart />} />
           <Route path="/checkout" element={<ProductCheckout />} />
         </Routes>

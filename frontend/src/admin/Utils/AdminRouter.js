@@ -19,38 +19,55 @@ import EditProductScreen from "../Screens/EditProductScreen";
 import MarkOrderScreen from "../Screens/MarkOrderScreen";
 import OutOfStock from "../Screens/OutOfStock";
 import Loginin from "../auth/signin";
-import PrivateRoute from "./PrivateRoute";
-import { useState } from "react";
 
 function AdminRouter() {
-  const [token, setToken] = useState("");
+  let token = localStorage.getItem("token") ? true : false;
+
   return (
-    <div >
-      
-      {/* <SideBar /> */}
+    <div>
       <ToastContainer position="top-right" limit={1} />
       <Router>
         <Routes>
-          <Route path="/login" element={<Loginin setToken={setToken} />} />
-          {/* <PrivateRoute
-            path="/dashboard"
-            element={<DashboardScreen />}
-            token={token}
-          /> */}
+          <Route
+            path="/login"
+            element={!token ? <Loginin /> : <Navigate to="/dashboard" />}
+          />
           <Route
             path="/dashboard"
-            element={<DashboardScreen />}
-            // token={token}
+            element={token ? <DashboardScreen /> : <Navigate to="/login" />}
           />
-          <Route path="/product" element={<ProductScreen />} />
-          <Route path="/orders" element={<OrdersScreen />} />
-          <Route path="/transaction" element={<TransactionScreen />} />
-          <Route path="/users" element={<UsersScreen />} />
-          <Route path="/add" element={<AddProduct />} />
-          <Route path="/:id/edit" element={<EditProductScreen />} />
-          <Route path="/:id/orders/mark" element={<MarkOrderScreen />} />
-          <Route path="/out-of-stock" element={<OutOfStock />} />
-          {/* <Route path="/" element={<Navigate to="/login" />} /> */}
+          <Route
+            path="/product"
+            element={token ? <ProductScreen /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/orders"
+            element={token ? <OrdersScreen /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/transaction"
+            element={token ? <TransactionScreen /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/users"
+            element={token ? <UsersScreen /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/add"
+            element={token ? <AddProduct /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/:id/edit"
+            element={token ? <EditProductScreen /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/:id/orders/mark"
+            element={token ? <MarkOrderScreen /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/out-of-stock"
+            element={token ? <OutOfStock /> : <Navigate to="/login" />}
+          />
         </Routes>
       </Router>
     </div>

@@ -17,6 +17,9 @@ import Container from "@mui/material/Container";
 import { base_url, getError } from "../Utils/Utils";
 import { toast } from "react-toastify";
 import SideBar from "../Layout/sideBar";
+import { Card } from "@mui/material";
+import SalesChart from "./SalesChart";
+import { Pie } from "react-chartjs-2";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -31,6 +34,7 @@ export default function DashboardScreen() {
   const [orderCount, setOrderCount] = React.useState([]);
   const [OutofStockCount, setOutofStockCount] = React.useState([]);
   const [totalSales, setTotalSales] = React.useState([]);
+  const [products, setProducts] = React.useState([]);
 
   React.useEffect(() => {
     //get product count
@@ -74,10 +78,22 @@ export default function DashboardScreen() {
       }
     };
 
+    //get all ordered items
+    const allSoldProducts = async () => {
+      try {
+        const fetched = await fetch(`${base_url}order/allorders`);
+        const jsonData = await fetched.json();
+        setProducts(jsonData);
+      } catch (err) {
+        toast.error(getError(err));
+      }
+    };
+
     fetchproductCount();
     fetchOrderCount();
     fetchOutofStockCount();
     fetchTotalSales();
+    allSoldProducts();
   }, []);
 
   return (
@@ -219,6 +235,21 @@ export default function DashboardScreen() {
               </StyledPaper>
             </Box>
           </div>
+          {/* <div>
+            <Card>
+              <Pie
+                data={{
+                  labels: products.map((data) => data.title),
+                  datasets: [
+                    {
+                      label: "Sold Items",
+                      data: products.map((data) => data.quantity),
+                    },
+                  ],
+                }}
+              />
+            </Card>
+          </div> */}
         </React.Fragment>
       </Container>
     </div>

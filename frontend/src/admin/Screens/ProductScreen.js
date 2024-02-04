@@ -8,8 +8,8 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
+import Select from "react-select";
+import Option from "@mui/joy/Option"
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
@@ -36,45 +36,110 @@ export default function ProductScreen() {
   const [open, setOpen] = React.useState(false);
 
   const [products, setProducts] = React.useState([]);
+  const [filteredProducts, setFilteredProducts] = React.useState([]);
+  const [section, setSection] = React.useState([]);
+  const [category, setCategory] = React.useState([]);
   //get all products
-  React.useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const fetched = await fetch(`${base_url}product`);
-        const jsonData = await fetched.json();
-        setProducts(jsonData);
-      } catch (err) {
-        toast.error(getError(err));
-      }
-    };
+  const fetchProducts = async () => {
+    try {
+      const fetched = await fetch(`${base_url}product`);
+      const jsonData = await fetched.json();
+      const uniqueBrands = [
+        ...new Set(jsonData.map((product) => product.brand)),
+      ];
+      const uniqueCate = [
+        ...new Set(jsonData.map((product) => product.category)),
+      ];
+      setSection(uniqueBrands);
+      setCategory(uniqueCate);
+      setProducts(jsonData);
+      setFilteredProducts(jsonData);
+    } catch (err) {
+      toast.error(getError(err));
+    }
+  };
 
+  React.useEffect(() => {
     fetchProducts();
   }, []);
 
+  // filter by brand
+  // function filterBrand(value){
+  //   let productArray=[]
+  //   filteredProducts.filter((product)=>{
+  //     if(product.brand===value){
+  //       productArray.push(product)
+  //       setProducts(productArray)
+  //     }else if(value==="All"){
+  //       setProducts(filteredProducts)
+  //     }
+  //   })
+  // }
+
+  // filter by brand
+  function filterBrand(value) {
+    if (value === "All") {
+      setProducts(filteredProducts);
+      return;
+    }
+
+    const brandFilteredProducts = filteredProducts.filter(
+      (product) => product.brand === value
+    );
+    setProducts(brandFilteredProducts);
+  }
+
+  // filter by category
+  function filterCate(value) {
+    if (value === "All") {
+      setProducts(filteredProducts);
+      return;
+    }
+
+    const cateFilteredProducts = filteredProducts.filter(
+      (product) => product.category === value
+    );
+    setProducts(cateFilteredProducts);
+  }
+
+  // // filter by category
+  // function filterCate(value){
+  //   let cateArray=[]
+  //   filteredProducts.filter((product)=>{
+  //     if(product.category===value){
+  //       cateArray.push(product)
+  //       setProducts(cateArray)
+  //     }else if(value==="All"){
+  //       setProducts(filteredProducts)
+  //     }
+  //   })
+  // }
+  // const uniqueBrands = [...new Set(products.map((product) => product.brand))];
+  const brandOptions = section.map((brand) => ({ value: brand, label: brand }));
+  const categoryOptions = category.map((cate) => ({
+    value: cate,
+    label: cate,
+  }));
   // filter
   const renderFilters = () => (
     <React.Fragment>
-      <FormControl size="sm">
+      <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Brand</FormLabel>
         <Select
           size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-        >
-          <Option value="pending">Hp</Option>
-          <Option value="Completed">Lenovo</Option>
-          <Option value="Completed">Dell</Option>
-        </Select>
+          placeholder="Filter by brand"
+          onChange={(e) => filterBrand(e.value)}
+          options={[{ value: "All", label: "All" }, ...brandOptions]}
+        />
       </FormControl>
-      <FormControl size="sm">
+      <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Category</FormLabel>
-        <Select size="sm" placeholder="All">
-          <Option value="all">All</Option>
-          <Option value="pending">Printer</Option>
-          <Option value="pending">Desktop</Option>
-          <Option value="Completed">Laptop</Option>
-          <Option value="pending">Accesories</Option>
-        </Select>
+        <Select
+          size="sm"
+          placeholder="Filter by category"
+          onChange={(e) => filterCate(e.value)}
+          options={[{ value: "All", label: "All" }, ...categoryOptions]}
+        />
       </FormControl>
     </React.Fragment>
   );
@@ -267,7 +332,9 @@ export default function ProductScreen() {
                           <Typography level="body-xs">
                             {product.title}
                           </Typography>
-                          <Typography level="body-xs">{product.category}</Typography>
+                          <Typography level="body-xs">
+                            {product.category}
+                          </Typography>
                         </div>
                       </Box>
                     </td>

@@ -76,6 +76,8 @@ export default function EditProductScreen() {
     }
   };
 
+
+  console.log(title)
   // get product info
   React.useEffect(() => {
     const fetchProducts = async () => {

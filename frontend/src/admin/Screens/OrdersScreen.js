@@ -9,7 +9,7 @@ import Input from "@mui/joy/Input";
 import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
-import Select from "@mui/joy/Select";
+import Select from "react-select";
 import Option from "@mui/joy/Option";
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
@@ -62,6 +62,9 @@ function RowMenu({ order }) {
 
 export default function OrdersScreen() {
   const [open, setOpen] = React.useState(false);
+  const [paid, setPaid] = React.useState([]);
+  const [status, setStatus] = React.useState([]);
+  const [filteredOrders, setFilteredOrders] = React.useState([]);
 
   //fetch order
   const [orders, setOrders] = React.useState([]);
@@ -70,27 +73,53 @@ export default function OrdersScreen() {
       try {
         const fetched = await fetch(`${base_url}order/orders`);
         const jsonData = await fetched.json();
+        const uniqueStatus = [
+          ...new Set(jsonData.map((status) => status.orderStatus)),
+        ];
+        const uniquePay = [
+          ...new Set(jsonData.map((product) => product.isPaid)),
+        ];
         setOrders(jsonData);
+        setStatus(uniqueStatus);
+        setPaid(uniquePay);
+        setFilteredOrders(jsonData)
+
       } catch (err) {
         toast.error(getError(err));
       }
     };
     fetchOrder();
   }, []);
+    // filter by Status
+    function filterStatus(value) {
+      if (value === "All") {
+        setOrders(filteredOrders);
+        return;
+      }
+  
+      const statusFilteredOrders = filteredOrders.filter(
+        (status) => status.orderStatus === value
+      );
+      setOrders(statusFilteredOrders);
+    }
+    const statusOptions = status.map((s) => ({
+      value: s,
+      label:s,
+    }));
+  
+
 
   // filter
   const renderFilters = () => (
     <React.Fragment>
-      <FormControl size="sm">
+      <FormControl size="sm" style={{ zIndex: 100 }}>
         <FormLabel>Status</FormLabel>
         <Select
           size="sm"
-          placeholder="Filter by status"
-          slotProps={{ button: { sx: { whiteSpace: "nowrap" } } }}
-        >
-          <Option value="pending">Pending</Option>
-          <Option value="Completed">Completed</Option>
-        </Select>
+          placeholder="Filter by brand"
+          onChange={(e) => filterStatus(e.value)}
+          options={[{ value: "All", label: "All" }, ...statusOptions ]}
+        />
       </FormControl>
       <FormControl size="sm">
         <FormLabel>Category</FormLabel>
