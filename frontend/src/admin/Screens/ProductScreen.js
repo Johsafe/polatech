@@ -9,7 +9,6 @@ import Modal from "@mui/joy/Modal";
 import ModalDialog from "@mui/joy/ModalDialog";
 import ModalClose from "@mui/joy/ModalClose";
 import Select from "react-select";
-import Option from "@mui/joy/Option"
 import Table from "@mui/joy/Table";
 import Sheet from "@mui/joy/Sheet";
 import IconButton, { iconButtonClasses } from "@mui/joy/IconButton";
@@ -62,6 +61,27 @@ export default function ProductScreen() {
   React.useEffect(() => {
     fetchProducts();
   }, []);
+
+  //search by title
+  const [search, setSearch] = React.useState("");
+  const [searchResult, setSearchResult] = React.useState([]);
+  const searchHandler = (searchValue) => {
+    setSearch(searchValue);
+
+    if (search !== "") {
+      const newContactList = products.filter((product) => {
+        // return (product.title)
+        // return Object.values(product.title)
+        //   .join('')
+        //   .toLowerCase()
+        //   .includes(search.toLowerCase());
+        return product.title.join('').toLowerCase().includes(search.toLowerCase());
+      });
+      setSearchResult(newContactList);
+    } else {
+      setSearchResult(products);
+    }
+  };
 
   // filter by brand
   // function filterBrand(value){
@@ -159,6 +179,7 @@ export default function ProductScreen() {
             <Input
               size="sm"
               placeholder="Search"
+              variant="outlined"
               startDecorator={<SearchIcon />}
               sx={{ flexGrow: 1 }}
             />
@@ -260,9 +281,10 @@ export default function ProductScreen() {
             <FormControl sx={{ flex: 1 }} size="sm">
               <FormLabel>Search for product</FormLabel>
               <Input
-                size="sm"
+                // size="sm"
                 placeholder="Search"
                 startDecorator={<SearchIcon />}
+                onChange={(e) => searchHandler(e.target.value)}
               />
             </FormControl>
             {renderFilters()}
@@ -304,56 +326,115 @@ export default function ProductScreen() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
-                  <tr key={product.id}>
-                    <td>{product.title}</td>
-                    <td>{product.brand}</td>
-                    <td>{product.inStock}</td>
-                    <td>Ksh. {product.price}</td>
-                    <td>
-                      <Box
-                        sx={{ display: "flex", gap: 2, alignItems: "center" }}
-                      >
-                        <Typography level="body-xs">
-                          <Avatar
-                            size="40"
-                            color={Avatar.getRandomColor("sitebase", [
-                              "rgb(233, 150, 150)",
-                              "rgb(164, 231, 164)",
-                              "rgb(236, 224, 167)",
-                              "rgb(174, 185, 233)",
-                            ])}
-                            // round={true}
-                            src={product.image}
-                            alt={product.title}
-                          />
-                        </Typography>
-                        <div>
-                          <Typography level="body-xs">
-                            {product.title}
-                          </Typography>
-                          <Typography level="body-xs">
-                            {product.category}
-                          </Typography>
-                        </div>
-                      </Box>
-                    </td>
-                    <td>
-                      <div>
-                        <ButtonGroup
-                          variant="text"
-                          aria-label="text button group"
-                          style={{ display: "flex", alignItems: "center" }}
-                        >
-                          <Link to={`/${product.id}/edit`}>
-                            <EditIcon style={{ color: "blue" }} />
-                          </Link>
-                          <DeleteProductModel product={product} />
-                        </ButtonGroup>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {search.length > 1
+                  ? searchResult.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.title}</td>
+                        <td>{product.brand}</td>
+                        <td>{product.inStock}</td>
+                        <td>Ksh. {product.price}</td>
+                        <td>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 2,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography level="body-xs">
+                              <Avatar
+                                size="40"
+                                color={Avatar.getRandomColor("sitebase", [
+                                  "rgb(233, 150, 150)",
+                                  "rgb(164, 231, 164)",
+                                  "rgb(236, 224, 167)",
+                                  "rgb(174, 185, 233)",
+                                ])}
+                                // round={true}
+                                src={product.image}
+                                alt={product.title}
+                              />
+                            </Typography>
+                            <div>
+                              <Typography level="body-xs">
+                                {product.title}
+                              </Typography>
+                              <Typography level="body-xs">
+                                {product.category}
+                              </Typography>
+                            </div>
+                          </Box>
+                        </td>
+                        <td>
+                          <div>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Link to={`/${product.id}/edit`}>
+                                <EditIcon style={{ color: "blue" }} />
+                              </Link>
+                              <DeleteProductModel product={product} />
+                            </ButtonGroup>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  : products.map((product) => (
+                      <tr key={product.id}>
+                        <td>{product.title}</td>
+                        <td>{product.brand}</td>
+                        <td>{product.inStock}</td>
+                        <td>Ksh. {product.price}</td>
+                        <td>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 2,
+                              alignItems: "center",
+                            }}
+                          >
+                            <Typography level="body-xs">
+                              <Avatar
+                                size="40"
+                                color={Avatar.getRandomColor("sitebase", [
+                                  "rgb(233, 150, 150)",
+                                  "rgb(164, 231, 164)",
+                                  "rgb(236, 224, 167)",
+                                  "rgb(174, 185, 233)",
+                                ])}
+                                // round={true}
+                                src={product.image}
+                                alt={product.title}
+                              />
+                            </Typography>
+                            <div>
+                              <Typography level="body-xs">
+                                {product.title}
+                              </Typography>
+                              <Typography level="body-xs">
+                                {product.category}
+                              </Typography>
+                            </div>
+                          </Box>
+                        </td>
+                        <td>
+                          <div>
+                            <ButtonGroup
+                              variant="text"
+                              aria-label="text button group"
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <Link to={`/${product.id}/edit`}>
+                                <EditIcon style={{ color: "blue" }} />
+                              </Link>
+                              <DeleteProductModel product={product} />
+                            </ButtonGroup>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </Table>
           </Sheet>
@@ -361,6 +442,7 @@ export default function ProductScreen() {
             className="Pagination-laptopUp"
             sx={{
               pt: 2,
+              mb:5,
               gap: 1,
               [`& .${iconButtonClasses.root}`]: { borderRadius: "50%" },
               display: {

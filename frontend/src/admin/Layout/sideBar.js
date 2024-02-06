@@ -22,8 +22,15 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import BrightnessAutoRoundedIcon from "@mui/icons-material/BrightnessAutoRounded";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
 
 export default function SideBar() {
+  const navigate = useNavigate();
+  function logOut() {
+    localStorage.clear();
+    navigate("/login");
+  }
+
   function closeSidebar() {
     if (typeof window !== "undefined") {
       document.documentElement.style.removeProperty("--SideNavigation-slideIn");
@@ -202,7 +209,12 @@ export default function SideBar() {
             <Typography level="title-sm">Admin Panel</Typography>
             <Typography level="body-xs">admin@test.com</Typography>
           </Box>
-          <IconButton size="sm" variant="plain" color="neutral">
+          <IconButton
+            size="sm"
+            variant="plain"
+            color="neutral"
+            onClick={logOut}
+          >
             <LogoutRoundedIcon />
           </IconButton>
         </Box>

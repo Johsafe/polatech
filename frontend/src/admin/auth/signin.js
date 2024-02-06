@@ -34,7 +34,7 @@ export default function Loginin() {
         email,
         password,
       });
-      localStorage.setItem("Logged", JSON.stringify(data));
+      // localStorage.setItem("Logged", JSON.stringify(data));
       localStorage.setItem('token', data.token);
       navigate("/dashboard");
     } catch (err) {
